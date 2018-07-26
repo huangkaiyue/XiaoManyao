@@ -1,0 +1,41 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<!-- 通常，一个session-factory节点代表一个数据库 -->
+	<session-factory>
+	
+		<!-- 1. 数据库连接配置 -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql://10.61.17.155:3306/testhibernate?useUnicode=true&amp;characterEncoding=utf8</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password">123456</property>
+		<property name="hibernate.connection.ipaddress">jdbc:mysql://10.61.17.155:3306</property>
+		<property name="hibernate.connection.databaseName">testhibernate</property>
+		<property name="hibernate.connection.downurl">http://192.168.1.20:9000/XiaoManyao/music?method=down&amp;fileName=</property>
+		<!-- 
+			数据库方法配置， hibernate在运行的时候，会根据不同的方言生成符合当前数据库语法的sql
+			<property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+		-->
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+		 
+		<!-- 2. 其他相关配置 -->
+		<!-- 2.1 显示hibernate在运行时候执行的sql语句 -->		
+		<property name="hibernate.show_sql">true</property>
+		<!-- 2.2 格式化sql -->
+		<property name="hibernate.format_sql">true</property>
+		<!-- 2.3 自动建表  -->
+		<property name="hibernate.hbm2ddl.auto">update</property>
+		
+		<!--1、create、创建表，启动的时候，先drop然后再创建表，(测试人员用来测试数据，先清除掉前面的旧表，在创建新表)
+　　　　　　　　2、create-drop：也表示创建，创建完后，就drop掉。(测试程序是否正确)
+　　　　　　　　3、update：检测类和表是否一致，不一致就会做更新，将表更新到和类一样
+　　　　　　　　4、validate：启动时检测表和类是否一致，不一致则报异常-->
+
+		<mapping resource="com/hibernate/db/Employee.hbm.xml"/>
+		<!-- 3. 加载所有映射 
+		
+		-->
+	</session-factory>
+</hibernate-configuration>

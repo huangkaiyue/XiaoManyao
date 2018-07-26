@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.hibernate.db">
+
+	
+	<class name="AlbumUtil" table="albummusic">
+		<!-- 主键 ，映射-->
+		<id name="mId" column="id">
+			<generator class="native"/>
+		</id>
+		<property name="albumName" column="albumName" unique="true" ></property>
+		<property name="logo" column="logo"  ></property>
+		<property name="savedir" column="savedir"></property>
+		<property name="pices" column="pices"></property>
+		<property name="date" column="date"></property>
+		<!-- 非主键，映射 -->
+		
+		<set name="albums" cascade="save-update,delete" table="musicList" inverse="true">   
+		 	 <key column="album_id"></key>
+		 	 <one-to-many class="MusicListUtil"/>
+		 </set>	
+	</class>
+		
+	<class name="MusicListUtil" table="musicList">
+		
+		<!-- 主键 ，映射-->
+		<id name="mId" column="id">
+			<generator class="native"/>
+		</id>
+		
+		<!-- 非主键，映射 -->
+		<property name="musicName" column="musicName" unique="true" ></property>
+		<property name="author" column="author"></property>
+		<property name="logo" column="logo"></property>
+		<property name="pices" column="pices"></property>
+		<property name="saveDir" column="saveDir"></property>
+		<property name="md5" column="md5"></property>
+		<property name="date" column="date"></property>
+		<many-to-one name="album_id" column="album_id" class="AlbumUtil"></many-to-one>
+	</class>
+	
+	<class name= "HuserManger" table="usrtable">
+		<id name ="uId" column="id">
+			<generator class="native"/>
+		</id>
+		<property name="usrname" column="usrname" unique="true" ></property>
+		<property name="passwd" column="passwd"></property>
+		<property name="chmod" column="chmod"></property>
+		<property name="date" column="date"></property>
+	</class>
+	
+		<class name= "Hversion" table="xversion">
+		<id name ="uId" column="id">
+			<generator class="native"/>
+		</id>
+		<property name="name" column="name" unique="true" ></property>
+		<property name="md5" column="md5"></property>
+		<property name="message" column="message"></property>
+		<property name="date" column="date"></property>
+	</class>
+
+</hibernate-mapping>
