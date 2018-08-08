@@ -6,9 +6,7 @@
 <struts>
 	<constant name="struts.multipart.maxSize" value="10000000" />
 	<package name="lanbao" extends="struts-default">
-		<action name="webName" class="com.lanbao.HelloAction" method="execute">
-			<result name="success">/success.jsp</result>
-		</action>
+	
 		<action name="login" class="com.lanbao.user.Login" method="login">
 			<result name="success">/success.jsp</result>
 		</action>
@@ -18,11 +16,14 @@
 		<action name="findpasswd" class="com.lanbao.user.Findpasswd" method="findpasswd">
 			<result name="success">/success.jsp</result>
 		</action>
+		<action name="bindsn" class="com.lanbao.user.BindSn" method="bindsn">
+			<result name="success">/success.jsp</result>
+		</action>
 		<action name="music" class="com.xiaomanyao.music.MusicList" method="execute">
 			<result name="success">/index.jsp</result>
 		</action>
 		
-		<action name="FileUpLoadAction" class="com.xiaomanyao.music.FileUpLoad">
+		<action name="Musicupload" class="com.xiaomanyao.music.Musicupload">
 		</action>
 		<action name="fileVersion" class="com.image.version.Imageversion">
 		</action>

@@ -4,38 +4,85 @@
 
 <hibernate-configuration>
 	<!-- 通常，一个session-factory节点代表一个数据库 -->
-	<session-factory>
-	
-		<!-- 1. 数据库连接配置 -->
-		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+<session-factory>
+
+	<!-- 1. 数据库连接配置 -->
+	<property name="hibernate.connection.driver_class">
+		com.mysql.jdbc.Driver
+	</property>
+	<!--	
 		<property name="hibernate.connection.url">jdbc:mysql://10.61.17.155:3306/testhibernate?useUnicode=true&amp;characterEncoding=utf8</property>
 		<property name="hibernate.connection.username">root</property>
 		<property name="hibernate.connection.password">123456</property>
 		<property name="hibernate.connection.ipaddress">jdbc:mysql://10.61.17.155:3306</property>
 		<property name="hibernate.connection.databaseName">testhibernate</property>
 		<property name="hibernate.connection.downurl">http://192.168.1.20:9000/XiaoManyao/music?method=down&amp;fileName=</property>
-		<!-- 
-			数据库方法配置， hibernate在运行的时候，会根据不同的方言生成符合当前数据库语法的sql
-			<property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
-		-->
-		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
-		 
-		<!-- 2. 其他相关配置 -->
-		<!-- 2.1 显示hibernate在运行时候执行的sql语句 -->		
-		<property name="hibernate.show_sql">true</property>
-		<!-- 2.2 格式化sql -->
-		<property name="hibernate.format_sql">true</property>
-		<!-- 2.3 自动建表  -->
-		<property name="hibernate.hbm2ddl.auto">update</property>
-		
-		<!--1、create、创建表，启动的时候，先drop然后再创建表，(测试人员用来测试数据，先清除掉前面的旧表，在创建新表)
-　　　　　　　　2、create-drop：也表示创建，创建完后，就drop掉。(测试程序是否正确)
-　　　　　　　　3、update：检测类和表是否一致，不一致就会做更新，将表更新到和类一样
-　　　　　　　　4、validate：启动时检测表和类是否一致，不一致则报异常-->
+		<property name="hibernate.connection.downVersion">http://192.168.1.20:9000/XiaoManyao/version?method=down&amp;fileName=</property>
+	-->
+	<property name="hibernate.connection.url">
+		jdbc:mysql://www.lanbaoai.cn:3306/xiaomanyao?useUnicode=true&amp;characterEncoding=utf8
+	</property>
+	<property name="hibernate.connection.username">root</property>
+	<property name="hibernate.connection.password">
+		kaiyue123456.
+	</property>
+	<property name="hibernate.connection.ipaddress">
+		jdbc:mysql://www.lanbaoai.cn:3306
+	</property>
+	<property name="hibernate.connection.databaseName">
+		xiaomanyao
+	</property>
+	<property name="hibernate.connection.downurl">http://192.168.1.20:9000/XiaoManyao/music?method=down&amp;fileName=</property> 
+	<!--  
+	<property name="hibernate.connection.downurl">
+		http://www.lanbaoai.cn:8080/XiaoManyao/music?method=down&amp;fileName=
+	</property>
+	-->
+	<property name="hibernate.connection.downVersion">
+		http://www.lanbaoai.cn:8080/XiaoManyao/version?method=down&amp;fileName=
+	</property>
 
-		<mapping resource="com/hibernate/db/Employee.hbm.xml"/>
-		<!-- 3. 加载所有映射 
-		
-		-->
-	</session-factory>
+	<!-- 
+		数据库方法配置， hibernate在运行的时候，会根据不同的方言生成符合当前数据库语法的sql
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+	-->
+	<property name="hibernate.dialect">
+		org.hibernate.dialect.MySQL5Dialect
+	</property>
+
+	<!-- 2. 其他相关配置 -->
+	<!-- 2.1 显示hibernate在运行时候执行的sql语句 -->
+	<property name="hibernate.show_sql">true</property>
+	<!-- 2.2 格式化sql -->
+	<property name="hibernate.format_sql">true</property>
+	<!-- 2.3 自动建表  -->
+	<property name="hibernate.hbm2ddl.auto">update</property>
+
+	<!--1、create、创建表，启动的时候，先drop然后再创建表，(测试人员用来测试数据，先清除掉前面的旧表，在创建新表)
+		　　　　　　　　2、create-drop：也表示创建，创建完后，就drop掉。(测试程序是否正确)
+		　　　　　　　　3、update：检测类和表是否一致，不一致就会做更新，将表更新到和类一样
+		　　　　　　　　4、validate：启动时检测表和类是否一致，不一致则报异常-->
+	<!-- 配置连接池参数，超时自动检测mysql 连接状态，保证mysql不断开连接 -->
+	<!-- 配置session的创建方式：线程方式创建session对象 -->
+	<property name="hibernate.current_session_context_class">
+		thread
+	</property>
+
+	<!--****************** 【连接池配置】****************** -->
+	<!-- 配置连接驱动管理类 -->
+	<property name="hibernate.connection.provider_class">
+		org.hibernate.connection.C3P0ConnectionProvider
+	</property>
+	<!-- 配置连接池参数信息 -->
+	<property name="hibernate.c3p0.min_size">2</property>
+	<property name="hibernate.c3p0.max_size">4</property>
+	<property name="hibernate.c3p0.timeout">5000</property>
+	<property name="hibernate.c3p0.max_statements">10</property>
+	<property name="hibernate.c3p0.idle_test_period">30000</property>
+	<property name="hibernate.c3p0.acquire_increment">10</property>
+	<property name="dialect">org.hibernate.dialect.DerbyDialect</property>
+
+	<mapping resource="com/hibernate/db/Employee.hbm.xml" />
+	<!-- 3. 加载所有映射 -->
+</session-factory>
 </hibernate-configuration>

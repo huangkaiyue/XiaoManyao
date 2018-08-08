@@ -4,19 +4,8 @@ public class HuserManger {
 	private int uId;
 	private String usrname;
 	private String passwd;
+	private String devSn;
 	private String chmod;
-	public String getChmod() {
-		return chmod;
-	}
-	public void setChmod(String chmod) {
-		this.chmod = chmod;
-	}
-	public String getDate() {
-		return date;
-	}
-	public void setDate(String date) {
-		this.date = date;
-	}
 	private String date;
 	
 	public int getuId() {
@@ -37,9 +26,27 @@ public class HuserManger {
 	public void setPasswd(String passwd) {
 		this.passwd = passwd;
 	}
+	public String getDevSn() {
+		return devSn;
+	}
+	public void setDevSn(String devSn) {
+		this.devSn = devSn;
+	}
+	public String getChmod() {
+		return chmod;
+	}
+	public void setChmod(String chmod) {
+		this.chmod = chmod;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
 	@Override
 	public String toString() {
 		return "HuserManger [uId=" + uId + ", usrname=" + usrname+ ", passwd=" + passwd
-				+ ", chmod=" + chmod + ", date=" + date + "]";
+				+", devSn="+devSn+ ", chmod=" + chmod + ", date=" + date + "]";
 	}
 }

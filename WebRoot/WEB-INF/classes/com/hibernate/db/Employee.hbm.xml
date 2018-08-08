@@ -12,9 +12,12 @@
 			<generator class="native"/>
 		</id>
 		<property name="albumName" column="albumName" unique="true" ></property>
+		<property name="author" column="author"  ></property>
 		<property name="logo" column="logo"  ></property>
 		<property name="savedir" column="savedir"></property>
 		<property name="pices" column="pices"></property>
+		<property name="albmMessage" column="albmMessage" length="512"></property>
+		<property name="logoHorizontal" column="logoHorizontal "></property>
 		<property name="date" column="date"></property>
 		<!-- 非主键，映射 -->
 		
@@ -49,6 +52,7 @@
 		<property name="usrname" column="usrname" unique="true" ></property>
 		<property name="passwd" column="passwd"></property>
 		<property name="chmod" column="chmod"></property>
+		<property name="devSn" column="devSn"></property>
 		<property name="date" column="date"></property>
 	</class>
 	

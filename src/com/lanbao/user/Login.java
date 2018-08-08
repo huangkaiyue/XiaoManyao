@@ -2,79 +2,73 @@ package com.lanbao.user;
 
 import java.io.IOException;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.hibernate.db.HiberSql;
 import com.hibernate.db.HuserManger;
 import com.lanbao.common.Common;
+import com.lanbao.common.HttpServletUtils;
 import com.lanbao.dbdata.CheckCode;
-import com.lanbao.dbdata.MysqlcallBack;
 import com.lanbao.dbdata.XiaomanyaoInterface;
-import com.lanbao.dbdata.XiaomanyaoUser;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class Login extends ActionSupport implements MysqlcallBack{
+public class Login extends ActionSupport {
 
 	public String login() throws IOException{
-		System.out.println(" login ");
-		
-		String boby=getRequestBoby();
+
+		String boby=HttpServletUtils.getRequestBoby(ServletActionContext.getRequest());
 		if(boby==null||boby.equals("")){
 			System.out.println(" getRequestBoby failed ");
-//			int ret = mysqlxiaomanyao.checkusername("18814119548");
 //			System.out.println("check checkusername ret:"+ret);
 //			Logutils.e(ServletActionContext.getRequest(), "无效的参数");
 //			CheckCode.checkPhoneCode("1218675043265","1234");
-			XiaomanyaoInterface.InsertUsr("测试", "test");
-			
+//			XiaomanyaoInterface.InsertData("测试", "test");
+//			BackupMysql();
 			AckRequestFailed(403,"无效的请求参数");
 			return NONE;
 		}
-		JSONObject js = JSONObject.fromObject(boby);
-		String msgtype = js.getString("msgtype").toString();
-		if(msgtype==null){
+		UserReq req =(UserReq)JSONObject.toBean(JSONObject.fromObject(boby),UserReq.class);
+		System.out.println(req.toString());
+		if(req.getMsgtype()==null){
 			AckRequestFailed(403,"无效的请求参数");
 			return NONE;
 		}
-		if(msgtype.equals("login")){
-			String usrname = js.getString("username").toString();
-			String passwd = js.getString("passwd").toString();
+		if(req.getMsgtype().equals("login")){
+			String usrname = req.getUsername();
+			String passwd = req.getPasswd();
 			if(usrname!=null&&passwd!=null){
-				
-				int ret =XiaomanyaoInterface.checkusernameAndpasswd(usrname,passwd);
-				switch (ret) {
-				case 0:
-					AckRequestLoginSuccess(usrname);
-					break;
-				case -1:
+				HuserManger usr =XiaomanyaoInterface.getUserMessageByusrname(usrname);
+				if(usr==null){
 					AckRequestFailed(201,"账号不存在");
-					break;
-				case -2:
-					AckRequestFailed(202,"密码错误");
-					break;
+				}else{
+					if(usr.getPasswd().equals(passwd)){
+						AckRequestLoginSuccess(usrname,usr.getDevSn());
+					}else{
+						AckRequestFailed(202,"密码错误");
+					}
 				}
 			}
-		}else if(msgtype.equals("autologin")){
-			String usrname = js.getString("username").toString();
-			String token = js.getString("token").toString();
+		}else if(req.getMsgtype().equals("autologin")){
+			String usrname = req.getUsername();
+			String token = req.getToken();
 			if(usrname!=null&&token!=null){
 				int ret =CheckCode.checkPhoneToken(usrname,token);
 				switch (ret) {
 				case CheckCode.ok_code:
-					ackCheckcode(usrname,200,"登录成功");
+					HuserManger usr =XiaomanyaoInterface.getUserMessageByusrname(usrname);
+					if(usr!=null){
+						ackCheckcode(usrname,usr.getDevSn(),200,"登录成功");
+					}else{
+						System.out.println("autologin: not found usrname");
+						AckRequestFailed(201,"账号不存在");
+					}
 					break;
 				case CheckCode.timeout_code:
-					ackCheckcode(usrname,401,"请重新手动输入密码登录");
+					ackCheckcode(usrname,"",401,"请重新手动输入密码登录");
 					break;
 				case CheckCode.invalid_code:
-					ackCheckcode(usrname,404,"无效登录参数，请重新手动输入密码登录");
+					ackCheckcode(usrname,"",404,"无效登录参数，请重新手动输入密码登录");
 					break;
 				default:
 					break;
@@ -85,72 +79,40 @@ public class Login extends ActionSupport implements MysqlcallBack{
 		return NONE;
 	}
 	
-	private void AckRequestLoginSuccess(String usrname) throws IOException{
+	private void AckRequestLoginSuccess(String usrname,String devSn) throws IOException{
 		String token = Common.GetToken();
+		System.out.println("start usrname:"+usrname+"--->CachePhoneToken:"+token);
 		CheckCode.CachePhoneToken(usrname, token);
-		JSONObject obj = new JSONObject();
-		obj.put("msgtype", "login");
-		obj.put("token", token);
-		obj.put("resdata", "登录成功");
-		obj.put("result", 200);
-		AckRequestResponse(obj.toString());
+		System.out.println("ack login:"+usrname+"--->CachePhoneToken:"+token);
+		String jsondata = AckInterface.CreateLoginAckJson("login", devSn, "登录成功",token, 200);
+		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 		
 	}
 	
 	private void AckRequestFailed(int result,String resdata) throws IOException{
-		JSONObject obj = new JSONObject();
-		obj.put("msgtype", "login");
-		obj.put("resdata", resdata);
-		obj.put("result", result);
-		AckRequestResponse(obj.toString());
+		String jsondata = AckInterface.CreateAckJson("login", resdata, "", result);
+		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 	}
 	
-	private void ackCheckcode(String usrname,int result,String resdata) throws IOException{
-		JSONObject obj = new JSONObject();
-		obj.put("msgtype", "autologin");
+	private void ackCheckcode(String usrname,String devSn,int result,String resdata) throws IOException{
 		String token = Common.GetToken();
-		obj.put("token", token);
-		obj.put("resdata", resdata);
-		obj.put("result", result);
 		CheckCode.CachePhoneToken(usrname, token);
-		System.out.println(obj.toString());
-		AckRequestResponse(obj.toString());
+		String jsondata = AckInterface.CreateLoginAckJson("autologin",devSn, resdata,token, result);
+		System.out.println(jsondata);
+		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 	}
 	
-	private void AckRequestResponse(String response) throws IOException{
-		HttpServletResponse Response= ServletActionContext.getResponse();
-		Response.setHeader("Content-type", "text/html;charset=UTF-8");  
-		Response.getWriter().print(response);
-		Response.getWriter().flush();
-		Response.getWriter().close();
-	}
-	
-	private String getRequestBoby(){
-		HttpServletRequest request =ServletActionContext.getRequest();
-		int len = request.getContentLength();
-//		System.out.println("len = "+len);
-		if(len<=0){
-			return null;
-		}
-		ServletInputStream bobySt;
-		String str="";
-		try {
-			bobySt = request.getInputStream();
-			byte[] buffer = new byte[len];
-			bobySt.read(buffer, 0, len);
-			str= new String(buffer);
-			System.out.println("getRequestBoby: get len="+len+" boby is :"+str);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return str;
-	}
+	private void BackupMysql(){
+		XiaomanyaoInterface.InsertData("13427472484", "123456");
+		XiaomanyaoInterface.InsertData("15919426331", "345542");
+		XiaomanyaoInterface.InsertData("13423664018", "3390126");
+		XiaomanyaoInterface.InsertData("18998391230", "787846060");
+		XiaomanyaoInterface.InsertData("13560173493", "13560173493");
+		XiaomanyaoInterface.InsertData("13688999416", "12345678");
+		XiaomanyaoInterface.InsertData("13435424376", "123456"); 
 
-	@Override
-	public void GetSqlData(JSONArray jarr, String usrname, String passwd,
-			String date) {
-		// TODO Auto-generated method stub
-		
+		XiaomanyaoInterface.InsertData("18620423341", "123456"); 
+		XiaomanyaoInterface.InsertData("13556824673", "123456"); 
+		XiaomanyaoInterface.InsertData("18665552802", "123456"); 
 	}
 }

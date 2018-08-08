@@ -24,7 +24,7 @@ public class HibernateUtil {
 		Session session = threadlocal.get() ;
 		if( session == null || !session.isOpen() ){
 			if( sessionFactory == null ){
-				HibernateUtil.CreateDataBase();
+//				HibernateUtil.CreateDataBase();
 				buildFactory();
 				System.out.println("load buildSessionFactory");
 			}
@@ -55,8 +55,12 @@ public class HibernateUtil {
 			String mysql_password = HibernateUtil.getConfiguration().getProperties().getProperty("hibernate.connection.password");
 			String mysql_url = HibernateUtil.getConfiguration().getProperties().getProperty("hibernate.connection.ipaddress");
 			String databaseName = HibernateUtil.getConfiguration().getProperties().getProperty("hibernate.connection.databaseName");
+//			String sql = "CREATE DATABASE IF NOT EXISTS "+databaseName+" default charset=utf8";
+//			String sql = "CREATE DATABASE IF NOT EXISTS "+databaseName+" useUnicode=true&characterEncoding=utf8";
+			String sql = "CREATE DATABASE IF NOT EXISTS "+databaseName+"";
+			System.out.println("start create database :"+mysql_url);
+			
 			conn=DriverManager.getConnection(mysql_url, mysql_user, mysql_password);
-			String sql = "CREATE DATABASE IF NOT EXISTS "+databaseName+" default charset=utf8";
 			stmt = conn.createStatement();
 			int count = stmt.executeUpdate(sql);
 			System.out.println("create database ok:"+mysql_url);

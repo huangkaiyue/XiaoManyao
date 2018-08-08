@@ -1,5 +1,6 @@
 package com.xiaomanyao.music;
 
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -8,7 +9,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.hibernate.db.AlbumUtil;
-import com.hibernate.db.HiberSql;
 import com.hibernate.db.MusicListUtil;
 
 public class XiaomanMusicAppInterface {
@@ -26,9 +26,14 @@ public class XiaomanMusicAppInterface {
 			AlbumUtil s = (AlbumUtil) iterator_e.next();
 			JSONObject obj = new JSONObject();
 			obj.put("AlbumName", s.getAlbumName());
+			obj.put("author", s.getAuthor());
 			obj.put("logo", downurl+s.getSavedir()+"/"+s.getLogo());
+			obj.put("logoHorizontal", downurl+s.getSavedir()+"/"+s.getLogoHorizontal());
+			obj.put("albmMessage", s.getAlbmMessage());
 			obj.put("pices", s.getPices());
-			obj.put("date", s.getDate().toString());
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			String dateString = formatter.format(s.getDate());
+			obj.put("date", dateString);
 			obj.put("index", s.getmId());
 			jarr.add(obj);
 			System.out.println(s.toString());
@@ -60,6 +65,15 @@ public class XiaomanMusicAppInterface {
 			System.out.println(s.toString());
 		}
 		json.put("musiclist", jarr);
+		str = json.toString();
+		return str;
+	}
+	
+	public static String loadMoreAlbum(int page){
+		String str = "";
+		JSONObject json = new JSONObject();
+		JSONArray jarr = new JSONArray();
+		json.put("Album", jarr);
 		str = json.toString();
 		return str;
 	}

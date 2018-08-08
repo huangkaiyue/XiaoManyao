@@ -14,13 +14,14 @@ import org.apache.struts2.ServletActionContext;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.lanbao.common.Common;
+import com.lanbao.common.HttpServletUtils;
 import com.lanbao.dbdata.CheckCode;
 import com.lanbao.dbdata.XiaomanyaoInterface;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class Findpasswd extends ActionSupport{
 	public String findpasswd() throws IOException, ClientException{
-		String boby=getRequestBoby();
+		String boby=HttpServletUtils.getRequestBoby(ServletActionContext.getRequest());
 		if(boby==null||boby.equals("")){
 			AckRequestFailed();
 			return NONE;
@@ -89,7 +90,7 @@ public class Findpasswd extends ActionSupport{
 		obj.put("resdata", resdata);
 		obj.put("result", result);
 		System.out.println(obj.toString());
-		AckResponse(obj.toString());
+		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),obj.toString());
 	}
 	private void ackCheckcode(int result,String resdata) throws IOException{
 		JSONObject obj = new JSONObject();
@@ -99,7 +100,7 @@ public class Findpasswd extends ActionSupport{
 		obj.put("resdata", resdata);
 		obj.put("result", result);
 		System.out.println(obj.toString());
-		AckResponse(obj.toString());
+		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),obj.toString());
 	}
 	private void AckUpdateSuccess() throws IOException{
 		JSONObject obj = new JSONObject();
@@ -108,7 +109,7 @@ public class Findpasswd extends ActionSupport{
 		obj.put("resdata", "找回密码成功");
 		obj.put("result", 200);
 		System.out.println(obj.toString());
-		AckResponse(obj.toString());
+		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),obj.toString());
 	}
 	
 	private void AckRequestFailed() throws IOException{
@@ -118,36 +119,6 @@ public class Findpasswd extends ActionSupport{
 		obj.put("resdata", "无效的参数");
 		obj.put("result", 403);
 		System.out.println(obj.toString());
-		AckResponse(obj.toString());
-	}
-	
-	private void AckResponse(String response) throws IOException{
-		HttpServletResponse Response= ServletActionContext.getResponse();
-		Response.setHeader("Content-type", "text/html;charset=UTF-8");  
-		Response.getWriter().print(response);
-		Response.getWriter().flush();
-		Response.getWriter().close();
-	}
-	
-	private String getRequestBoby(){
-		HttpServletRequest request =ServletActionContext.getRequest();
-		int len = request.getContentLength();
-//		System.out.println("len = "+len);
-		if(len<=0){
-			return null;
-		}
-		ServletInputStream bobySt;
-		String str="";
-		try {
-			bobySt = request.getInputStream();
-			byte[] buffer = new byte[len];
-			bobySt.read(buffer, 0, len);
-			str= new String(buffer);
-			System.out.println("getRequestBoby: get len="+len+" boby is :"+str);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return str;
+		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),obj.toString());
 	}
 }

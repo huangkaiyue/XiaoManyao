@@ -9,18 +9,40 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import com.hibernate.db.AlbumUtil;
 import com.hibernate.db.HiberSql;
 import com.hibernate.db.HibernateUtil;
 import com.hibernate.db.MusicListUtil;
-import com.lanbao.common.Logutils;
 
 public class XiaomanyaoMusicSql {
 	
-	public static int InsertMusicList(String musicName,String author,String albumName,String logo,String saveDir,String md5){
+	public static boolean checkAlbum(String albumName){
+		AlbumUtil albumutil =null; 
+
+		Session session = HibernateUtil.getSession();// 创建session (代表一个会话，与数据库连接的会话)
+		Transaction tx = session.beginTransaction();// 开启事务
+		String sql = "from AlbumUtil al where al.albumName=?";
+		Query query =session.createQuery(sql);//HQL创建查询语句
+		query.setParameter(0,albumName);
+		
+		List<Object>list=query.list();
+		if(list!=null&&list.size()!=0){
+			Iterator iterator = list.iterator();
+			while(iterator.hasNext()){
+				albumutil = (AlbumUtil) iterator.next();
+				System.out.println(albumutil.toString()); 
+				tx.commit();// 提交事务
+				HibernateUtil.closeSession();// 关闭
+				return  true;
+			}	 
+		}
+		tx.commit();// 提交事务
+		HibernateUtil.closeSession();// 关闭
+		return  false;
+	}
+	
+	// 返回值 0:专辑已经存在，不需要上传专辑封面  -1: 新专辑上传
+	public static int InsertMusicList(String musicName,String author,String albumName,String logo,String saveDir,String md5,String logo_hor,String albummessage){
 		int ret =-1;
 		MusicListUtil mlist = new MusicListUtil();
 		mlist.setMusicName(musicName);
@@ -44,18 +66,23 @@ public class XiaomanyaoMusicSql {
 			Iterator iterator = list.iterator();
 			while(iterator.hasNext()){
 				albumutil = (AlbumUtil) iterator.next();
-				System.out.println("getAlbumName:"+albumutil.getAlbumName()+"getmId:"+albumutil.getmId()); 
+				System.out.println("albumName is exsit:"+albumName);     
+//				System.out.println(albumutil.toString()); 
 			}	 
 			mlist.setAlbum_id(albumutil);
 			session.save(mlist);//保存-数据库
+			ret=0;
 		}else{
-    	   System.out.println("not find");     
+			System.out.println("not find,insert new albumName:"+albumName);     
 			albumutil = new AlbumUtil();
+			albumutil.setAuthor(author);
 			albumutil.setAlbumName(albumName);
+			albumutil.setAlbmMessage(albummessage);
 			albumutil.setSavedir(saveDir);
-			mlist.setPices("8$");
+			albumutil.setPices("8");
 			albumutil.setDate(day);
 			albumutil.setLogo(logo);
+			albumutil.setLogoHorizontal(logo_hor);
 			mlist.setAlbum_id(albumutil);
 			session.save(albumutil);//保存-数据库
 			session.save(mlist);//保存-数据库

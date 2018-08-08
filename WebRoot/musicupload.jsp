@@ -24,16 +24,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
   <body>  
      <!-- enctype 默认是 application/x-www-form-urlencoded -->  
-     <form action="FileUpLoadAction" enctype="multipart/form-data" method="post" >  
+     <form action="Musicupload" enctype="multipart/form-data" method="post" >  
           
                歌      手 ：<input type="text" name="author"><br/>  
-               专      辑：<input type="text" name="album"><br/>  
+               专      辑：<input type="text" name="album"><br/>
+                专辑介绍：<input type="text" name="albummessage" style="width:600px"><br/>    
                歌曲封面：<input type="file" name="file1" accept="image/*"><br/>  
                歌       曲：<input type="file" name="file1" accept="audio/*"><br/>  
-                 
+              横屏封面：<input type="file" name="file1" accept="image/*"><br/>
+      <label class="bg-info">服务器选择</label>        
+ 	  <input type="radio" name="serverSelect" value="1" checked="checked"/>本地服务器</label>    	
+     	<label><input type="radio" name="serverSelect" value="2" />云服务器</label>
+      <br />
+      <label>  
       <input type="submit" value="提交"/>  
-       
      </form>  
-    
   </body>  
 </html>  

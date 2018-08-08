@@ -4,6 +4,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.hibernate.db.HibernateUtil;
 import com.hibernate.db.Hversion;
 import com.lanbao.common.FileInter;
 import com.lanbao.common.HttpServletUtils;
@@ -24,6 +25,8 @@ public class DownLoadVer extends ActionSupport{
 			Hversion hver = XmyVerSql.ScanVersion();
 			JSONObject obj = new JSONObject();
 			obj.put("version", hver.getName());
+			String downUrl = HibernateUtil.getConfiguration().getProperties().getProperty("hibernate.connection.downVersion");
+			obj.put("url",downUrl+hver.getName());
 			obj.put("id", hver.getuId());
 			obj.put("md5",hver.getMd5());
 			obj.put("message", hver.getMessage());

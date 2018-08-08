@@ -13,6 +13,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
@@ -93,7 +94,6 @@ public class FileInter {
 	   }
 	 
 	 public static void downloadFile(HttpServletResponse  response,ServletContext context,String fileName)throws Exception{	//下载文件接口 
-			
 			try {
 				fileName = new String(fileName.getBytes("ISO8859-1"),"UTF-8");
 			} catch (UnsupportedEncodingException e) {
@@ -101,9 +101,19 @@ public class FileInter {
 				e.printStackTrace();
 			}
 			String basePath = context.getRealPath("/XiaomanyaoFile");
-			InputStream in = new FileInputStream(new File(basePath,fileName));
+			File file =new File(basePath,fileName);
+			InputStream in = new FileInputStream(file);
+			
 			fileName = URLEncoder.encode(fileName, "UTF-8");
-			response.setHeader("content-disposition", "attachment;fileName=" + fileName);
+			response.setContentLength((int)file.length());
+			if(fileName.contains("mp3")){	//音频流传输
+				response.setHeader("Content-Type", "audio/mpeg");
+				System.out.println("set play mp3...............request:"+fileName);
+			}else{
+				//设置传输以文件方式
+				response.setHeader("content-disposition", "attachment;fileName=" + fileName);
+				response.setContentType("application/octet-stream");
+			}
 			OutputStream out = ServletActionContext.getResponse().getOutputStream();
 			
 			byte[] b = new byte[1024];

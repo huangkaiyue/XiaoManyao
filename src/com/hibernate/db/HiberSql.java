@@ -69,35 +69,49 @@ public class HiberSql {
     
 	  public static void updateUsrPasswd(String  usrname,String passwd){
 		Session session = HibernateUtil.getSession();
-		Transaction tran = session.beginTransaction();
+		Transaction tx = session.beginTransaction();
 		Query query = session.createQuery("update HuserManger usr set usr.passwd=? where usrname=?");
 		query.setParameter(0, passwd);
 		query.setParameter(1, usrname);
 		query.executeUpdate();
-		session.getTransaction().commit();
+		tx.commit();// 提交事务
+		HibernateUtil.closeSession();  
+	  }
+	  public static void updateUsrdevSn(String  usrname,String devSn){
+		Session session = HibernateUtil.getSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			Query query = session.createQuery("update HuserManger usr set usr.devSn=? where usrname=?");
+			query.setParameter(0, devSn);
+			query.setParameter(1, usrname);
+			query.executeUpdate();
+			tx.commit();// 提交事务
+		}catch (Exception e) {
+			System.out.println("updateUsrdevSn:"+e.toString());
+		}
 		HibernateUtil.closeSession();  
 	  }
 	  
 	  public static void updateUsrTable(String  usrname,String passwd,String chmod){
 		Session session = HibernateUtil.getSession();
-		Transaction tran = session.beginTransaction();
+		Transaction tx = session.beginTransaction();// 开启事务
 		Query query = session.createQuery("update HuserManger usr set usr.passwd=?,usr.chmod=? where usrname=?");
 		query.setParameter(0, passwd);
 		query.setParameter(1, chmod);
 		query.setParameter(2, usrname);
 		query.executeUpdate();
-		session.getTransaction().commit();
+		tx.commit();// 提交事务
 		HibernateUtil.closeSession();  
 	  }
 
 	  public static void deleteUsrTable(String usrname){
 		Session session = HibernateUtil.getSession();
-		Transaction tran = session.beginTransaction();
+		Transaction tx = session.beginTransaction();
 		String sql = "delete from HuserManger usr where usr.usrname=?";
 		Query query = session.createQuery(sql);
 		query.setParameter(0, usrname);
 		query.executeUpdate();
-		session.getTransaction().commit();
+		tx.commit();
 		HibernateUtil.closeSession();  
 	  }
 

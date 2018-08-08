@@ -2,10 +2,6 @@ package com.lanbao.dbdata;
 
 import java.util.List;
 
-import com.lanbao.common.Logutils;
-
-
-
 public class CheckCode {
 //	private static String phone ="188814119548";
 //	private static String code ="1234";

@@ -14,7 +14,7 @@ public class JedisUtil {
   
     //Redis服务器IP  
 //    private static String ADDR_ARRAY = "10.61.17.155";  
-    private static String ADDR_ARRAY = "192.168.1.15";  
+    private static String ADDR_ARRAY = "47.95.230.203";  
   
     //Redis的端口号  
     private static int PORT = 6379;  
