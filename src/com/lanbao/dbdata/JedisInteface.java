@@ -6,8 +6,8 @@ import redis.clients.jedis.Jedis;
 
 public class JedisInteface {
 	
-	private static String ipaddress = "47.95.230.203";
-//	private static String ipaddress = "localhost";
+//	private static String ipaddress = "47.95.230.203";
+	private static String ipaddress = "localhost";
 	private static int port = 6379;
 	
 	private static List<String> hmget(String key,String... fields){
@@ -19,8 +19,9 @@ public class JedisInteface {
 	}
 	private static void hmset(String key,String field,String value){
 		Jedis jedis = new Jedis(ipaddress, port);
+		System.out.println("JedisInteface ip:"+ipaddress);
 		jedis.auth("123456");
-		jedis.hset(key, field, value);
+		jedis.hset(key, field, value);		
 		jedis.close();  
 	}
 	

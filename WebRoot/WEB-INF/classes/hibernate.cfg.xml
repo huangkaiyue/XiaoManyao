@@ -10,45 +10,29 @@
 	<property name="hibernate.connection.driver_class">
 		com.mysql.jdbc.Driver
 	</property>
-	<!--	
-		<property name="hibernate.connection.url">jdbc:mysql://10.61.17.155:3306/testhibernate?useUnicode=true&amp;characterEncoding=utf8</property>
+	
+		<property name="hibernate.connection.url">jdbc:mysql://10.61.17.155:3306/xiaomanyao?useUnicode=true&amp;characterEncoding=utf8</property>
 		<property name="hibernate.connection.username">root</property>
 		<property name="hibernate.connection.password">123456</property>
 		<property name="hibernate.connection.ipaddress">jdbc:mysql://10.61.17.155:3306</property>
-		<property name="hibernate.connection.databaseName">testhibernate</property>
+		<property name="hibernate.connection.databaseName">xiaomanyao</property>
 		<property name="hibernate.connection.downurl">http://192.168.1.20:9000/XiaoManyao/music?method=down&amp;fileName=</property>
 		<property name="hibernate.connection.downVersion">http://192.168.1.20:9000/XiaoManyao/version?method=down&amp;fileName=</property>
+	
+	<!--
+	<property name="hibernate.connection.url">jdbc:mysql://47.95.230.203:3306/xiaomanyao?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false</property>
+	<property name=" hibernate.connection.username">root</property>
+	<property name="hibernate.connection.password">kaiyue123456.</property>
+	<property name="hibernate.connection.ipaddress">jdbc:mysql://47.95.230.203:3306</property>
+	<property name="hibernate.connection.databaseName">xiaomanyao</property>
+	<property name="hibernate.connection.downurl">https://www.lanbaoai.cn/XiaoManyao/music?method=down&amp;fileName=</property> 
+	<property name="hibernate.connection.downVersion">https://www.lanbaoai.cn/XiaoManyao/version?method=down&amp;fileName=</property>
 	-->
-	<property name="hibernate.connection.url">
-		jdbc:mysql://www.lanbaoai.cn:3306/xiaomanyao?useUnicode=true&amp;characterEncoding=utf8
-	</property>
-	<property name="hibernate.connection.username">root</property>
-	<property name="hibernate.connection.password">
-		kaiyue123456.
-	</property>
-	<property name="hibernate.connection.ipaddress">
-		jdbc:mysql://www.lanbaoai.cn:3306
-	</property>
-	<property name="hibernate.connection.databaseName">
-		xiaomanyao
-	</property>
-	<property name="hibernate.connection.downurl">http://192.168.1.20:9000/XiaoManyao/music?method=down&amp;fileName=</property> 
-	<!--  
-	<property name="hibernate.connection.downurl">
-		http://www.lanbaoai.cn:8080/XiaoManyao/music?method=down&amp;fileName=
-	</property>
-	-->
-	<property name="hibernate.connection.downVersion">
-		http://www.lanbaoai.cn:8080/XiaoManyao/version?method=down&amp;fileName=
-	</property>
-
 	<!-- 
 		数据库方法配置， hibernate在运行的时候，会根据不同的方言生成符合当前数据库语法的sql
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
 	-->
-	<property name="hibernate.dialect">
-		org.hibernate.dialect.MySQL5Dialect
-	</property>
+	<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
 
 	<!-- 2. 其他相关配置 -->
 	<!-- 2.1 显示hibernate在运行时候执行的sql语句 -->
@@ -68,12 +52,8 @@
 		thread
 	</property>
 
-	<!--****************** 【连接池配置】****************** -->
-	<!-- 配置连接驱动管理类 -->
-	<property name="hibernate.connection.provider_class">
-		org.hibernate.connection.C3P0ConnectionProvider
-	</property>
-	<!-- 配置连接池参数信息 -->
+	<!--****************** 【连接池配置】(加上连接池无法自动创建)****************** -->
+	<property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
 	<property name="hibernate.c3p0.min_size">2</property>
 	<property name="hibernate.c3p0.max_size">4</property>
 	<property name="hibernate.c3p0.timeout">5000</property>
@@ -81,7 +61,8 @@
 	<property name="hibernate.c3p0.idle_test_period">30000</property>
 	<property name="hibernate.c3p0.acquire_increment">10</property>
 	<property name="dialect">org.hibernate.dialect.DerbyDialect</property>
-
+	<!-- 配置连接池参数信息 -->
+	
 	<mapping resource="com/hibernate/db/Employee.hbm.xml" />
 	<!-- 3. 加载所有映射 -->
 </session-factory>

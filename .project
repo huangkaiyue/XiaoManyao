@@ -3,6 +3,7 @@
 	<name>XiaoManyao</name>
 	<comment></comment>
 	<projects>
+		<project>ServerSdk</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

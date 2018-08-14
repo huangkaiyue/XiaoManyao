@@ -19,6 +19,9 @@
 		<action name="bindsn" class="com.lanbao.user.BindSn" method="bindsn">
 			<result name="success">/success.jsp</result>
 		</action>
+		<action name="weixinAuthInter" class="com.weixin.fm.WeixinAuth" method="weixinAuthInter">
+			<result name="success">/success.jsp</result>
+		</action>
 		<action name="music" class="com.xiaomanyao.music.MusicList" method="execute">
 			<result name="success">/index.jsp</result>
 		</action>

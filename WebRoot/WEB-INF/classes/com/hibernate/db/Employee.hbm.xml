@@ -5,7 +5,6 @@
 
 <hibernate-mapping package="com.hibernate.db">
 
-	
 	<class name="AlbumUtil" table="albummusic">
 		<!-- 主键 ，映射-->
 		<id name="mId" column="id">
@@ -55,7 +54,31 @@
 		<property name="devSn" column="devSn"></property>
 		<property name="date" column="date"></property>
 	</class>
+	<!-- ========微信用户绑定========= -->
+	<class name= "Weixinuser" table="weixintable">
+		<id name ="uId" column="id">
+			<generator class="native"/>
+		</id>
+		<property name="unionId" column="unionId" unique="true" ></property>
+		<property name="openid" column="openid"></property>
+		<property name="chmod" column="chmod"></property>
+		<property name="date" column="date"></property>
+		<set name="devsnS" cascade="save-update,delete" table="weixinDevlist" inverse="true">   
+		 	 <key column="devsn_id"></key>
+		 	 <one-to-many class="WxDevsnlistUtil"/>
+		 </set>	
+	</class>
 	
+	<class name="WxDevsnlistUtil" table="weixinDevlist">
+		<id name="uId" column="id">
+			<generator class="native"/>
+		</id>
+		
+		<property name="devsn" column="devsn" ></property>
+		<property name="date" column="date"></property>
+		<many-to-one name="devsn_id" column="devsn_id" class="Weixinuser"></many-to-one>
+	</class>
+	<!-- //========微信用户绑定========= -->
 		<class name= "Hversion" table="xversion">
 		<id name ="uId" column="id">
 			<generator class="native"/>

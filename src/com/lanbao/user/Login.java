@@ -12,6 +12,7 @@ import com.lanbao.common.HttpServletUtils;
 import com.lanbao.dbdata.CheckCode;
 import com.lanbao.dbdata.XiaomanyaoInterface;
 import com.opensymphony.xwork2.ActionSupport;
+import com.server.sdk.MnsQueue;
 
 public class Login extends ActionSupport {
 
@@ -25,6 +26,8 @@ public class Login extends ActionSupport {
 //			CheckCode.checkPhoneCode("1218675043265","1234");
 //			XiaomanyaoInterface.InsertData("测试", "test");
 //			BackupMysql();
+			MnsQueue.SendMessage("test");
+		
 			AckRequestFailed(403,"无效的请求参数");
 			return NONE;
 		}
