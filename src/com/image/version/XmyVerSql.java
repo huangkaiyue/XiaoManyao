@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 
 import com.hibernate.db.HiberSql;
 import com.hibernate.db.HibernateUtil;
+import com.hibernate.db.HuserManger;
 import com.hibernate.db.Hversion;
 import com.hibernate.db.MusicListUtil;
 import com.lanbao.common.Logutils;
@@ -37,22 +38,37 @@ public class XmyVerSql {
 		}
 		return ret;
 	}
+//	public static Hversion ScanVersion(){
+//		List<Object> list =null;
+//		Hversion hversion =null;
+//		String hql="from Hversion order by id desc ";	//查找最后一个ID
+//		Session session = HibernateUtil.getSession();
+//		Transaction tran = session.beginTransaction();
+//		Query query = session.createQuery(hql);
+//		query.setFirstResult(0);
+//		query.setMaxResults(1);
+//		list=query.list();
+//		Iterator iterator_e = list.iterator();
+//		while(iterator_e.hasNext()){
+//			hversion  = (Hversion)iterator_e.next();
+//			System.out.println(hversion.toString());
+//			break;
+//		}
+//		return hversion;
+//	}
 	public static Hversion ScanVersion(){
-		List<Object> list =null;
 		Hversion hversion =null;
-		String hql="from Hversion order by id desc ";
-		Session session = HibernateUtil.getSession();
-		Transaction tran = session.beginTransaction();
-		Query query = session.createQuery(hql);
-		query.setFirstResult(0);
-		query.setMaxResults(1);
-		list=query.list();
-		Iterator iterator_e = list.iterator();
-		while(iterator_e.hasNext()){
-			hversion  = (Hversion)iterator_e.next();
-			System.out.println(hversion.toString());
-			break;
+		
+		List<Object> list= HiberSql.ScanTable("Hversion");
+		Iterator iterator = list.iterator();
+		long version = 0;
+		while(iterator.hasNext()){
+			Hversion ver = (Hversion) iterator.next();
+			if(version<Long.parseLong(ver.getMessage())){
+				version = Long.parseLong(ver.getMessage());
+				hversion=ver;
+			}
 		}
-		return hversion;
+		return  hversion;
 	}
 }

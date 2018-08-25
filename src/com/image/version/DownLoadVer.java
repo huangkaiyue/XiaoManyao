@@ -9,6 +9,7 @@ import com.hibernate.db.Hversion;
 import com.lanbao.common.FileInter;
 import com.lanbao.common.HttpServletUtils;
 import com.opensymphony.xwork2.ActionSupport;
+import com.start.server.ConfigServer;
 
 public class DownLoadVer extends ActionSupport{
 	String reslut =SUCCESS;
@@ -17,17 +18,19 @@ public class DownLoadVer extends ActionSupport{
 		// TODO Auto-generated method stub
 		String method = ServletActionContext.getRequest().getParameter("method");		
 		if(method.equals("down")){
-			String fileName = "xiaomanyaoImageVesion/"+ServletActionContext.getRequest().getParameter("fileName");
+			String filepathName = ConfigServer.getInstance().getVersionDir()+ServletActionContext.getRequest().getParameter("fileName");
 			
-			FileInter.downloadFile(ServletActionContext.getResponse(),ServletActionContext.getServletContext(),fileName);
+			FileInter.downloadFile(ServletActionContext.getResponse(),ServletActionContext.getServletContext(),filepathName,ServletActionContext.getRequest().getParameter("fileName"));
 			reslut=NONE;
 		}else if(method.equals("checkVersion")){
 			Hversion hver = XmyVerSql.ScanVersion();
 			JSONObject obj = new JSONObject();
 			obj.put("version", hver.getName());
-			String downUrl = HibernateUtil.getConfiguration().getProperties().getProperty("hibernate.connection.downVersion");
+			String downUrl = ConfigServer.getInstance().getVersionUrl()+ConfigServer.getInstance().getVersionDir();
 			obj.put("url",downUrl+hver.getName());
-			obj.put("id", hver.getuId());
+			String downUrls = ConfigServer.getInstance().getHttsVersionUrl()+ConfigServer.getInstance().getVersionDir();
+			obj.put("urls",downUrls+hver.getName());
+			obj.put("verNum", hver.getMessage());
 			obj.put("md5",hver.getMd5());
 			obj.put("message", hver.getMessage());
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(), obj.toString());

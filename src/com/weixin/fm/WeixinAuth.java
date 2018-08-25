@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
@@ -14,6 +15,7 @@ import org.apache.struts2.ServletActionContext;
 import com.lanbao.common.HttpServletUtils;
 import com.lanbao.user.AckInterface;
 import com.opensymphony.xwork2.ActionSupport;
+import com.server.sdk.MsgInterface;
 
 public class WeixinAuth extends ActionSupport{
 	public String weixinAuthInter() throws IOException{
@@ -51,8 +53,25 @@ public class WeixinAuth extends ActionSupport{
 			String msgdir = js.getString("dir").toString();
 			String unionId = js.getString("unionId").toString();
 			String devsn = js.getString("devsn").toString();
-			String msgboby = js.getString("msgboby").toString();
+			String formId = js.getString("formId").toString();
+			JSONArray jarr = js.getJSONArray("msgbody");
+			String type="";
+			String url="";
+			for(int i=0;i<jarr.size();i++){
+				JSONObject jobj= (JSONObject) jarr.get(i);
+				type= jobj.getString("type").toString();
+				url= jobj.getString("url").toString();
+			}
+			System.out.println("type:"+type+"--->url:"+url);
+			MsgInterface.WxMsgSend( devsn, type, formId, url);
+			
 			String jsondata = AckInterface.CreateAckJson("pushMsg", "推送成功", "", 200);
+			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
+		}else if(msgtype.equals("delete")){
+			String unionId = js.getString("unionId").toString();
+			String devsn = js.getString("devsn").toString();
+			WxSqlInterface.deleteDevSnByUnionId(unionId, devsn);
+			String jsondata = AckInterface.CreateAckJson("delete", "删除成功", "", 200);
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 		}
 		return NONE;

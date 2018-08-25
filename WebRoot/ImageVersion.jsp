@@ -26,8 +26,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      <!-- enctype 默认是 application/x-www-form-urlencoded -->  
      <form action="fileVersion" enctype="multipart/form-data" method="post" >  
                   
-               小蛮腰固件：<input type="file" name="file1" accept="/*"><br/>  
-              版本信息：<input type="text" name="versionMessage"><br/>          
+               小蛮腰固件：<input type="file" name="file1" accept="/*"><br/>          
       <input type="submit" value="提交"/>  
        
      </form>  

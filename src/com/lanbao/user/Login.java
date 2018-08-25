@@ -26,7 +26,7 @@ public class Login extends ActionSupport {
 //			CheckCode.checkPhoneCode("1218675043265","1234");
 //			XiaomanyaoInterface.InsertData("测试", "test");
 //			BackupMysql();
-			MnsQueue.SendMessage("test");
+//			MnsQueue.SendMessage("070001834000001-d","web测试接口");
 		
 			AckRequestFailed(403,"无效的请求参数");
 			return NONE;

@@ -29,12 +29,13 @@ public class InitFilter implements Filter{
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
 		// TODO Auto-generated method stub
-		System.out.println("================>[Filter]start create database and table  version v.0.0.7");
+		System.out.println("================>[Filter]start create database and table  version v.0.0.9");
 		MnsQueue.InitMnsQueue();
 		String logPath = arg0.getServletContext().getRealPath("/log");
 		ConfigServer.getInstance().setLogPath(logPath);
 		System.out.println("init path :"+ConfigServer.getInstance().getLogPath());
-		LoadMusic.loadmusicfromMysql(arg0.getServletContext().getRealPath("/XiaomanyaoFile")+"/albumlist.json");
+        String path = ConfigServer.getInstance().getCacheDir(); 
+		LoadMusic.loadmusicfromMysql(path+"/albumlist.json");
 		System.out.println("================>[Filter]start create database and table ok");  
 		
 	}

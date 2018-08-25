@@ -13,6 +13,7 @@ import com.lanbao.common.Common;
 import com.lanbao.common.FileInter;
 import com.lanbao.common.HttpServletUtils;
 import com.opensymphony.xwork2.ActionSupport;
+import com.start.server.ConfigServer;
 
 public class MusicList extends ActionSupport{
 	String reslut =SUCCESS;
@@ -26,10 +27,10 @@ public class MusicList extends ActionSupport{
 			request.setCharacterEncoding("UTF-8");
 			ServletActionContext.setRequest(request);
 			String fileName = request.getParameter("fileName");
-			FileInter.downloadFile(ServletActionContext.getResponse(),ServletActionContext.getServletContext(),fileName);
+			FileInter.downloadFile(ServletActionContext.getResponse(),ServletActionContext.getServletContext(),fileName,fileName);
 			reslut=NONE;	
 		}else if(method.equals("Album")){
-			String path = ServletActionContext.getServletContext().getRealPath("/XiaomanyaoFile/albumlist.json");
+			String path = ConfigServer.getInstance().getCacheDir()+"/albumlist.json"; 
 			String json = CreateMusicListJson(path);
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),json);
 			reslut=NONE;		
@@ -41,8 +42,7 @@ public class MusicList extends ActionSupport{
 			}
 			int index = Integer.parseInt(indexStr);
 			System.out.println("get album index:"+index);
-			String downUrl = HibernateUtil.getConfiguration().getProperties().getProperty("hibernate.connection.downurl");
-			String json =XiaomanMusicAppInterface.ScanAlbumMusicList(index,downUrl);
+			String json =XiaomanMusicAppInterface.ScanAlbumMusicList(index);
 			if(json.equals("")){
 				AckRequestStatus(404,"invalid index");
 			}else{
@@ -57,7 +57,7 @@ public class MusicList extends ActionSupport{
 				json =XiaomanMusicAppInterface.loadMoreAlbum(page);
 				reslut=NONE;
 			}else{
-				String path = ServletActionContext.getServletContext().getRealPath("/XiaomanyaoFile/albumlist.json");
+		        String path = ConfigServer.getInstance().getCacheDir()+"/albumlist.json"; 
 				json = CreateMusicListJson(path);	
 			}
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),json);

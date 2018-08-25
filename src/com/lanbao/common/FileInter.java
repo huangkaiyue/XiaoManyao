@@ -13,7 +13,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +21,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
+
+import com.start.server.ConfigServer;
 
 public class FileInter {
 
@@ -93,25 +94,25 @@ public class FileInter {
 		 return value;
 	   }
 	 
-	 public static void downloadFile(HttpServletResponse  response,ServletContext context,String fileName)throws Exception{	//下载文件接口 
+	 public static void downloadFile(HttpServletResponse  response,ServletContext context,String filepathName,String filename)throws Exception{	//下载文件接口 
 			try {
-				fileName = new String(fileName.getBytes("ISO8859-1"),"UTF-8");
+				filepathName = new String(filepathName.getBytes("ISO8859-1"),"UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			String basePath = context.getRealPath("/XiaomanyaoFile");
-			File file =new File(basePath,fileName);
+			String basePath = ConfigServer.getInstance().getCacheDir(); 
+			File file =new File(basePath,filepathName);
 			InputStream in = new FileInputStream(file);
 			
-			fileName = URLEncoder.encode(fileName, "UTF-8");
+			filepathName = URLEncoder.encode(filepathName, "UTF-8");
 			response.setContentLength((int)file.length());
-			if(fileName.contains("mp3")){	//音频流传输
+			if(filepathName.contains("mp3")){	//音频流传输
 				response.setHeader("Content-Type", "audio/mpeg");
-				System.out.println("set play mp3...............request:"+fileName);
+				System.out.println("set play mp3...............request:"+filepathName);
 			}else{
 				//设置传输以文件方式
-				response.setHeader("content-disposition", "attachment;fileName=" + fileName);
+				response.setHeader("content-disposition", "attachment;fileName=" + filename);
 				response.setContentType("application/octet-stream");
 			}
 			OutputStream out = ServletActionContext.getResponse().getOutputStream();
@@ -123,7 +124,7 @@ public class FileInter {
 			}
 			out.close();
 			in.close();
-			System.out.println("fileName send file ok:"+fileName+"--->return:NONE");
+			System.out.println("fileName send file ok:"+filename+"--->return:NONE");
 		} 
 	 
 	 public static void main(String[] args) {

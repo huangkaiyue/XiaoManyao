@@ -2,7 +2,6 @@ package com.xiaomanyao.music;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +13,7 @@ import org.apache.struts2.ServletActionContext;
 import com.lanbao.common.Common;
 import com.lanbao.common.FileInter;
 import com.opensymphony.xwork2.ActionSupport;
+import com.start.server.ConfigServer;
 
 public class Musicupload extends ActionSupport{ 
 	private String author="" ; 
@@ -62,9 +62,8 @@ public class Musicupload extends ActionSupport{
 	@Override
 	public String execute() throws Exception {
 		// TODO Auto-generated method stub
-//		uploadFile(ServletActionContext.getRequest(),ServletActionContext.getResponse());    
-		// 获取上传的目录路径		
-	
+
+		// 获取上传的目录路径			
 		if(file1==null){
 			System.out.println("not upload file ......");
 			return NONE;
@@ -75,7 +74,7 @@ public class Musicupload extends ActionSupport{
 		}else{
 			System.out.println("upload is aliyun server");
 		}
-        String path = ServletActionContext.getServletContext().getRealPath("/XiaomanyaoFile");  
+        String path = ConfigServer.getInstance().getCacheDir(); 
         String  saveDir = Common.createDirBydate(path);
         boolean ret =XiaomanyaoMusicSql.checkAlbum(album);
 		System.out.println("author:"+author);

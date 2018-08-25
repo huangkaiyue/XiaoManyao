@@ -93,7 +93,7 @@ public class XiaomanyaoMusicSql {
 		return ret;
 	}
 	
-	public static Set<MusicListUtil> ScanMusicListByAlbumId(int Albumid,String downurl){
+	public static Set<MusicListUtil> ScanMusicListByAlbumId(int Albumid){
 		int ret =-1;
 
 		AlbumUtil albumutil =null; 

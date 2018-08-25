@@ -15,6 +15,7 @@ import org.hibernate.Transaction;
 
 import com.hibernate.db.HiberSql;
 import com.hibernate.db.HibernateUtil;
+import com.hibernate.db.MusicListUtil;
 import com.hibernate.db.Weixinuser;
 import com.hibernate.db.WxDevsnlistUtil;
 import com.lanbao.common.Logutils;
@@ -97,8 +98,9 @@ public class WxSqlInterface {
 			Iterator iterator = list.iterator();
 			while(iterator.hasNext()){
 				wutils = (WxDevsnlistUtil) iterator.next();
-				System.out.println("WxSqlBindDevSn:"+wutils.toString()); 
-				if(wutils.getuId()==wUser.getuId()){
+				Weixinuser wt = wutils.getDevsn_id();
+				System.out.println("WxSqlBindDevSn:"+wutils.toString()+"--->wt.getuId():"+wt.getuId()+"--->wUser.getuId():"+wUser.getuId()); 
+				if(wt.getuId()==wUser.getuId()){
 					System.out.println("is bind already:"+wutils.getDevsn()); 
 					bind_ok = true;
 					ret =-2;
@@ -173,4 +175,46 @@ public class WxSqlInterface {
 		System.out.println("json : "+str);
 		return str;
 	}
+	
+	public static int deleteDevSnByUnionId(String unionId,String devsn){
+		int ret =-1;
+		String str ="";
+		Weixinuser wxUser =null; 
+
+		Session session = HibernateUtil.getSession();// 创建session (代表一个会话，与数据库连接的会话)
+		Transaction tx = session.beginTransaction();// 开启事务
+		String sql = "from Weixinuser wx where wx.unionId=?";
+		Query query =session.createQuery(sql);//HQL创建查询语句
+		query.setParameter(0,unionId);
+		int delId=0;
+		List<Object>list=query.list();
+		if(list!=null&&list.size()!=0){
+			Iterator iterator = list.iterator();
+			while(iterator.hasNext()){
+				wxUser = (Weixinuser) iterator.next();
+				System.out.println("ScanWxuserDevsnByUnionId:"+wxUser.toString());
+				break;
+			}	 
+		}
+		Set<WxDevsnlistUtil> wlist =wxUser.getDevsnS();
+		
+		Iterator iterator =wlist.iterator();
+		while(iterator.hasNext()){
+			WxDevsnlistUtil ws= (WxDevsnlistUtil) iterator.next();
+			System.out.println(ws.toString());
+			if(ws.getDevsn().equals(devsn)){
+				delId = ws.getuId();
+			}
+		}
+		
+		sql = "delete from WxDevsnlistUtil wl where wl.uId=?";
+		query =session.createQuery(sql);//HQL创建查询语句
+		query.setParameter(0,delId);
+		query.executeUpdate();
+		System.out.println("delete from delId:"+delId);
+		tx.commit();// 提交事务
+		HibernateUtil.closeSession();// 关闭	
+		return ret;
+	}
+	
 }

@@ -10,16 +10,19 @@ import net.sf.json.JSONObject;
 
 import com.hibernate.db.AlbumUtil;
 import com.hibernate.db.MusicListUtil;
+import com.start.server.ConfigServer;
 
 public class XiaomanMusicAppInterface {
 	
-	public static String ScanAlbumList(String downurl){
+	public static String ScanAlbumList(){
 		String str = "";
+		String downurl = ConfigServer.getInstance().getDownUrl();
+		String httpsdownurl = ConfigServer.getInstance().getHttpsDownUrl();
 		List<Object>list_e =XiaomanyaoMusicSql.ScanAlbum();
 		if(list_e==null){
 			return str;
 		}
-		Iterator iterator_e = list_e.iterator();
+		Iterator<Object> iterator_e = list_e.iterator();
 		JSONObject json = new JSONObject();
 		JSONArray jarr = new JSONArray();
 		while(iterator_e.hasNext()){
@@ -27,8 +30,8 @@ public class XiaomanMusicAppInterface {
 			JSONObject obj = new JSONObject();
 			obj.put("AlbumName", s.getAlbumName());
 			obj.put("author", s.getAuthor());
-			obj.put("logo", downurl+s.getSavedir()+"/"+s.getLogo());
-			obj.put("logoHorizontal", downurl+s.getSavedir()+"/"+s.getLogoHorizontal());
+			obj.put("logo", httpsdownurl+s.getSavedir()+"/"+s.getLogo());
+			obj.put("logoHorizontal", httpsdownurl+s.getSavedir()+"/"+s.getLogoHorizontal());
 			obj.put("albmMessage", s.getAlbmMessage());
 			obj.put("pices", s.getPices());
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -43,13 +46,15 @@ public class XiaomanMusicAppInterface {
 		return str;
 	}
 	
-	public static String ScanAlbumMusicList(int index,String downurl){
+	public static String ScanAlbumMusicList(int index){
 		String str = "";
-		Set<MusicListUtil>list_e =XiaomanyaoMusicSql.ScanMusicListByAlbumId(index,downurl);
+		Set<MusicListUtil>list_e =XiaomanyaoMusicSql.ScanMusicListByAlbumId(index);
 		if(list_e==null){
 			return str;
 		}
-		Iterator iterator_e = list_e.iterator();
+		String downurl = ConfigServer.getInstance().getDownUrl();
+		String httpsdownurl = ConfigServer.getInstance().getHttpsDownUrl();
+		Iterator<MusicListUtil> iterator_e = list_e.iterator();
 		JSONObject json = new JSONObject();
 		JSONArray jarr = new JSONArray();
 		while(iterator_e.hasNext()){
@@ -57,10 +62,12 @@ public class XiaomanMusicAppInterface {
 			JSONObject obj = new JSONObject();
 			obj.put("musicname", s.getMusicName());
 			obj.put("url", downurl+s.getSaveDir()+"/"+s.getMusicName());
+			obj.put("urls", httpsdownurl+s.getSaveDir()+"/"+s.getMusicName());
 			obj.put("author", s.getAuthor());
-//			obj.put("pices", s.getPices());
 			obj.put("md5", s.getMd5());
-			obj.put("date", s.getDate().toString());
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			String dateString = formatter.format(s.getDate());
+			obj.put("date", dateString);
 			jarr.add(obj);
 			System.out.println(s.toString());
 		}

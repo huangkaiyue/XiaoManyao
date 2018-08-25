@@ -18,8 +18,6 @@ public class Common {
 	private String accessKey="3x4rOYN4RcjYKsLvXgSxeQvegqeIjx";
 	private String accountEndpoint="https://1226525498732712.mns.cn-hangzhou.aliyuncs.com/";
 	
-		
-	
 //	private String accessId="LTAI0V1E2e1MAHdV";
 //	private String accessKey="U87P0Vy0H9IXdxgb1DdBVoya89aK4r";
 	
