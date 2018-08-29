@@ -1,5 +1,8 @@
 package com.hibernate.db;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class HuserManger {
 	private int uId;
 	private String usrname;
@@ -7,7 +10,9 @@ public class HuserManger {
 	private String devSn;
 	private String chmod;
 	private String date;
+	private Set<HuserDevsnlistUtil> devsnS = new HashSet<HuserDevsnlistUtil>();
 	
+
 	public int getuId() {
 		return uId;
 	}
@@ -43,6 +48,12 @@ public class HuserManger {
 	}
 	public void setDate(String date) {
 		this.date = date;
+	}
+	public Set<HuserDevsnlistUtil> getDevsnS() {
+		return devsnS;
+	}
+	public void setDevsnS(Set<HuserDevsnlistUtil> devsnS) {
+		this.devsnS = devsnS;
 	}
 	@Override
 	public String toString() {

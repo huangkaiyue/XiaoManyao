@@ -67,7 +67,64 @@ public class WxSqlInterface {
 		return ret;
 	}
 	
-	public static int WxSqlBindDevSn(String unionId,String devsn){
+//	public static int WxSqlBindDevSn(String unionId,String devsn){
+//		int ret=-1;
+//
+//		Weixinuser wUser=null;
+//		Session session = HibernateUtil.getSession();// 创建session (代表一个会话，与数据库连接的会话)
+//		Transaction tx = session.beginTransaction();// 开启事务
+//		String sql = "from Weixinuser wx where wx.unionId=?";
+//		Query query =session.createQuery(sql);//HQL创建查询语句
+//		query.setParameter(0,unionId);
+//		int uId= 0;
+//		List<Object>list=query.list();
+//		if(list!=null&&list.size()!=0){
+//			Iterator iterator = list.iterator();
+//			while(iterator.hasNext()){
+//				wUser = (Weixinuser) iterator.next();
+//				System.out.println("WxSqlBindDevSn:"+wUser.toString()); 
+//				uId=wUser.getuId();
+//				ret =0;
+//			}	 
+//		}
+//		
+//		sql = "from WxDevsnlistUtil wl where wl.devsn=?";
+//		query =session.createQuery(sql);//HQL创建查询语句
+//		query.setParameter(0,devsn);
+//		list=query.list();
+//		WxDevsnlistUtil wutils = null;
+//		boolean bind_ok=false;
+//		if(list!=null&&list.size()!=0){
+//			Iterator iterator = list.iterator();
+//			while(iterator.hasNext()){
+//				wutils = (WxDevsnlistUtil) iterator.next();
+//				Weixinuser wt = wutils.getDevsn_id();
+//				System.out.println("WxSqlBindDevSn:"+wutils.toString()+"--->wt.getuId():"+wt.getuId()+"--->wUser.getuId():"+wUser.getuId()); 
+//				if(wt.getuId()==wUser.getuId()){
+//					System.out.println("is bind already:"+wutils.getDevsn()); 
+//					bind_ok = true;
+//					ret =-2;
+//				}else{
+//					System.out.println("not bind devsn:"+devsn); 
+//				}
+//			}	 
+//		}		
+//		if(bind_ok==false){
+//			WxDevsnlistUtil wxlist = new WxDevsnlistUtil();
+//			wxlist.setDevsn(devsn);
+//			Date day=new Date();    
+//			wxlist.setDate(day);
+//			wxlist.setDevsn_id(wUser);
+//			session.save(wxlist);
+//			ret =0;
+//			System.out.println("unionId:"+unionId+"--->bind devsn"+devsn); 
+//		}
+//		tx.commit();// 提交事务
+//		HibernateUtil.closeSession();// 关闭
+//		return ret;
+//	}
+	
+	public static int WxSqlBindDevSn(String unionId,String phone){
 		int ret=-1;
 
 		Weixinuser wUser=null;
@@ -88,9 +145,9 @@ public class WxSqlInterface {
 			}	 
 		}
 		
-		sql = "from WxDevsnlistUtil wl where wl.devsn=?";
+		sql = "from HuserManger wl where wl.usrname=?";
 		query =session.createQuery(sql);//HQL创建查询语句
-		query.setParameter(0,devsn);
+		query.setParameter(0,phone);
 		list=query.list();
 		WxDevsnlistUtil wutils = null;
 		boolean bind_ok=false;
@@ -105,24 +162,25 @@ public class WxSqlInterface {
 					bind_ok = true;
 					ret =-2;
 				}else{
-					System.out.println("not bind devsn:"+devsn); 
+					System.out.println("not bind devsn:"+phone); 
 				}
 			}	 
 		}		
 		if(bind_ok==false){
 			WxDevsnlistUtil wxlist = new WxDevsnlistUtil();
-			wxlist.setDevsn(devsn);
+			wxlist.setDevsn(phone);
 			Date day=new Date();    
 			wxlist.setDate(day);
 			wxlist.setDevsn_id(wUser);
 			session.save(wxlist);
 			ret =0;
-			System.out.println("unionId:"+unionId+"--->bind devsn"+devsn); 
+			System.out.println("unionId:"+unionId+"--->bind devsn"+phone); 
 		}
 		tx.commit();// 提交事务
 		HibernateUtil.closeSession();// 关闭
 		return ret;
 	}
+	
 	public static Set<WxDevsnlistUtil> ScanWxuserDevsnByUnionId(String unionId){
 		int ret =-1;
 		String str ="";

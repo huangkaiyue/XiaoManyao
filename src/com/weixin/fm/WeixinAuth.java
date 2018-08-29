@@ -28,12 +28,12 @@ public class WeixinAuth extends ActionSupport{
 		System.out.println("WeixinAuth recv:"+boby);
 		JSONObject js = JSONObject.fromObject(boby);
 		String msgtype= js.get("msgtype").toString();
-		if(msgtype.equals("getunionId")){
+		if(msgtype.equals("getunionId")){			//微信用户获取唯一ID
 			String usercode = js.getString("usercode").toString();
 			String userencryData= js.getString("userencryData").toString();
 			String openid=GetWeixinOpenid(usercode);
 			Ackopenid(openid);
-		}else if(msgtype.equals("bindsn")){
+		}else if(msgtype.equals("bindsn")){			//微信用户绑定设备SN号
 			String unionId = js.getString("unionId").toString();
 			String devsn= js.getString("devsn").toString();
 			int ret =WxSqlInterface.WxSqlBindDevSn(unionId, devsn);
@@ -45,11 +45,11 @@ public class WeixinAuth extends ActionSupport{
 			else{
 				AckBindDevSn(unionId,devsn,404,"not found unionId");
 			}
-		}else if(msgtype.equals("scandev")){
+		}else if(msgtype.equals("scandev")){		//获取当前用户绑定的设备号
 			String unionId = js.getString("unionId").toString();
 			String jsondata=WxSqlInterface.CreateWxuserDevsnByUnionId_AckJson(unionId);
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
-		}else if(msgtype.equals("pushMsg")){
+		}else if(msgtype.equals("pushMsg")){		//推送消息到设备
 			String msgdir = js.getString("dir").toString();
 			String unionId = js.getString("unionId").toString();
 			String devsn = js.getString("devsn").toString();
@@ -65,9 +65,16 @@ public class WeixinAuth extends ActionSupport{
 			System.out.println("type:"+type+"--->url:"+url);
 			MsgInterface.WxMsgSend( devsn, type, formId, url);
 			
-			String jsondata = AckInterface.CreateAckJson("pushMsg", "推送成功", "", 200);
+			JSONObject ackJson = new JSONObject();
+			ackJson.put("msgtype", "pushMsg");
+			ackJson.put("resdata", "推送成功");
+			ackJson.put("token", "");
+			ackJson.put("devsn", "");
+			ackJson.put("type", type);
+			ackJson.put("result", 200);
+			String jsondata = ackJson.toString();
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
-		}else if(msgtype.equals("delete")){
+		}else if(msgtype.equals("delete")){		//解除微信号和设备绑定关系
 			String unionId = js.getString("unionId").toString();
 			String devsn = js.getString("devsn").toString();
 			WxSqlInterface.deleteDevSnByUnionId(unionId, devsn);
@@ -106,7 +113,7 @@ public class WeixinAuth extends ActionSupport{
 		System.out.println("AckBindDevSn:"+jsondata);
 		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 	}
-	private static String GetWeixinOpenid(String js_code){
+	private static String GetWeixinOpenid(String js_code){	//获取用户微信小程序openid 
         String openid = "";
         String line;
         StringBuffer sb=new StringBuffer();

@@ -60,6 +60,10 @@ public class XmyVerSql {
 		Hversion hversion =null;
 		
 		List<Object> list= HiberSql.ScanTable("Hversion");
+		if(list==null){
+			System.out.println("not version");
+			return null;
+		}
 		Iterator iterator = list.iterator();
 		long version = 0;
 		while(iterator.hasNext()){

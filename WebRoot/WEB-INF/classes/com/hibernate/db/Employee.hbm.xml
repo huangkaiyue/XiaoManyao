@@ -44,6 +44,7 @@
 		<many-to-one name="album_id" column="album_id" class="AlbumUtil"></many-to-one>
 	</class>
 	
+	<!-- =============================手机用户绑定================================================= -->
 	<class name= "HuserManger" table="usrtable">
 		<id name ="uId" column="id">
 			<generator class="native"/>
@@ -53,8 +54,24 @@
 		<property name="chmod" column="chmod"></property>
 		<property name="devSn" column="devSn"></property>
 		<property name="date" column="date"></property>
+		
+		<set name="devsnS" cascade="save-update,delete" table="Devsnlist" inverse="true">   
+		 	 <key column="devsn_id"></key>
+		 	 <one-to-many class="HuserDevsnlistUtil"/>
+		 </set>	
+		
 	</class>
-	<!-- ========微信用户绑定========= -->
+	
+	<class name="HuserDevsnlistUtil" table="Devsnlist">
+		<id name="uId" column="id"><generator class="native"/></id>
+		<property name="devsn" column="devsn" ></property>
+		<property name="date" column="date"></property>
+		<many-to-one name="devsn_id" column="devsn_id" class="HuserManger"></many-to-one>
+	</class>
+	
+	<!-- end=============================手机用户绑定================================================= -->
+	
+	<!-- =============================微信用户绑定================================================= -->
 	<class name= "Weixinuser" table="weixintable">
 		<id name ="uId" column="id">
 			<generator class="native"/>
@@ -78,7 +95,9 @@
 		<property name="date" column="date"></property>
 		<many-to-one name="devsn_id" column="devsn_id" class="Weixinuser"></many-to-one>
 	</class>
-	<!-- //========微信用户绑定========= -->
+	<!-- end=============================微信用户绑定==================================== -->
+	
+	
 		<class name= "Hversion" table="xversion">
 		<id name ="uId" column="id">
 			<generator class="native"/>

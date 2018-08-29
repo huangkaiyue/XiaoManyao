@@ -16,7 +16,7 @@ import com.lanbao.common.Common;
 
 public class AliyunOss {
 
-	public String GetOssUrlByName(String ossName){	//���oss keyname ��ȡ�����������ӵ�
+	public String GetOssUrlByName(String ossName){
 		
 		System.out.println("Send message id is: ........" );
 		String bucketName = "lanbaoai123";

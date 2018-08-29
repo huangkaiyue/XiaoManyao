@@ -25,14 +25,23 @@ public class DownLoadVer extends ActionSupport{
 		}else if(method.equals("checkVersion")){
 			Hversion hver = XmyVerSql.ScanVersion();
 			JSONObject obj = new JSONObject();
-			obj.put("version", hver.getName());
-			String downUrl = ConfigServer.getInstance().getVersionUrl()+ConfigServer.getInstance().getVersionDir();
-			obj.put("url",downUrl+hver.getName());
-			String downUrls = ConfigServer.getInstance().getHttsVersionUrl()+ConfigServer.getInstance().getVersionDir();
-			obj.put("urls",downUrls+hver.getName());
-			obj.put("verNum", hver.getMessage());
-			obj.put("md5",hver.getMd5());
-			obj.put("message", hver.getMessage());
+			if(hver==null){
+				obj.put("version", "");
+				obj.put("url","");
+				obj.put("urls","");
+				obj.put("verNum", "");
+				obj.put("md5","");
+				obj.put("message", "");
+			}else{
+				obj.put("version", hver.getName());
+				String downUrl = ConfigServer.getInstance().getVersionUrl()+ConfigServer.getInstance().getVersionDir();
+				obj.put("url",downUrl+hver.getName());
+				String downUrls = ConfigServer.getInstance().getHttsVersionUrl()+ConfigServer.getInstance().getVersionDir();
+				obj.put("urls",downUrls+hver.getName());
+				obj.put("verNum", hver.getMessage());
+				obj.put("md5",hver.getMd5());
+				obj.put("message", hver.getMessage());
+			}
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(), obj.toString());
 			reslut=NONE;
 		}

@@ -21,11 +21,8 @@ public class Login extends ActionSupport {
 		String boby=HttpServletUtils.getRequestBoby(ServletActionContext.getRequest());
 		if(boby==null||boby.equals("")){
 			System.out.println(" getRequestBoby failed ");
-//			System.out.println("check checkusername ret:"+ret);
-//			Logutils.e(ServletActionContext.getRequest(), "无效的参数");
 //			CheckCode.checkPhoneCode("1218675043265","1234");
 //			XiaomanyaoInterface.InsertData("测试", "test");
-//			BackupMysql();
 //			MnsQueue.SendMessage("070001834000001-d","web测试接口");
 		
 			AckRequestFailed(403,"无效的请求参数");
@@ -103,19 +100,5 @@ public class Login extends ActionSupport {
 		String jsondata = AckInterface.CreateLoginAckJson("autologin",devSn, resdata,token, result);
 		System.out.println(jsondata);
 		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
-	}
-	
-	private void BackupMysql(){
-		XiaomanyaoInterface.InsertData("13427472484", "123456");
-		XiaomanyaoInterface.InsertData("15919426331", "345542");
-		XiaomanyaoInterface.InsertData("13423664018", "3390126");
-		XiaomanyaoInterface.InsertData("18998391230", "787846060");
-		XiaomanyaoInterface.InsertData("13560173493", "13560173493");
-		XiaomanyaoInterface.InsertData("13688999416", "12345678");
-		XiaomanyaoInterface.InsertData("13435424376", "123456"); 
-
-		XiaomanyaoInterface.InsertData("18620423341", "123456"); 
-		XiaomanyaoInterface.InsertData("13556824673", "123456"); 
-		XiaomanyaoInterface.InsertData("18665552802", "123456"); 
 	}
 }
