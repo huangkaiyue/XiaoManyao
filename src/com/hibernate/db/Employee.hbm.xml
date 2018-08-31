@@ -80,6 +80,7 @@
 		<property name="openid" column="openid"></property>
 		<property name="chmod" column="chmod"></property>
 		<property name="date" column="date"></property>
+		<property name="phone" column="phone"></property>
 		<set name="devsnS" cascade="save-update,delete" table="weixinDevlist" inverse="true">   
 		 	 <key column="devsn_id"></key>
 		 	 <one-to-many class="WxDevsnlistUtil"/>

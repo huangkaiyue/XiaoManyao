@@ -15,10 +15,12 @@ import org.hibernate.Transaction;
 
 import com.hibernate.db.HiberSql;
 import com.hibernate.db.HibernateUtil;
-import com.hibernate.db.MusicListUtil;
+import com.hibernate.db.HuserDevsnlistUtil;
+import com.hibernate.db.HuserManger;
 import com.hibernate.db.Weixinuser;
 import com.hibernate.db.WxDevsnlistUtil;
 import com.lanbao.common.Logutils;
+import com.lanbao.dbdata.XiaomanyaoInterface;
 
 public class WxSqlInterface {
 	
@@ -123,101 +125,38 @@ public class WxSqlInterface {
 //		HibernateUtil.closeSession();// 关闭
 //		return ret;
 //	}
-	
+	//更新微信用户绑定手机号码
 	public static int WxSqlBindDevSn(String unionId,String phone){
-		int ret=-1;
-
-		Weixinuser wUser=null;
-		Session session = HibernateUtil.getSession();// 创建session (代表一个会话，与数据库连接的会话)
-		Transaction tx = session.beginTransaction();// 开启事务
-		String sql = "from Weixinuser wx where wx.unionId=?";
-		Query query =session.createQuery(sql);//HQL创建查询语句
-		query.setParameter(0,unionId);
-		int uId= 0;
-		List<Object>list=query.list();
-		if(list!=null&&list.size()!=0){
-			Iterator iterator = list.iterator();
-			while(iterator.hasNext()){
-				wUser = (Weixinuser) iterator.next();
-				System.out.println("WxSqlBindDevSn:"+wUser.toString()); 
-				uId=wUser.getuId();
-				ret =0;
-			}	 
+		int ret =-1;
+		if(XiaomanyaoInterface.checkusername(phone)==-1){
+			return -1;
 		}
-		
-		sql = "from HuserManger wl where wl.usrname=?";
-		query =session.createQuery(sql);//HQL创建查询语句
-		query.setParameter(0,phone);
-		list=query.list();
-		WxDevsnlistUtil wutils = null;
-		boolean bind_ok=false;
-		if(list!=null&&list.size()!=0){
-			Iterator iterator = list.iterator();
-			while(iterator.hasNext()){
-				wutils = (WxDevsnlistUtil) iterator.next();
-				Weixinuser wt = wutils.getDevsn_id();
-				System.out.println("WxSqlBindDevSn:"+wutils.toString()+"--->wt.getuId():"+wt.getuId()+"--->wUser.getuId():"+wUser.getuId()); 
-				if(wt.getuId()==wUser.getuId()){
-					System.out.println("is bind already:"+wutils.getDevsn()); 
-					bind_ok = true;
-					ret =-2;
-				}else{
-					System.out.println("not bind devsn:"+phone); 
-				}
-			}	 
-		}		
-		if(bind_ok==false){
-			WxDevsnlistUtil wxlist = new WxDevsnlistUtil();
-			wxlist.setDevsn(phone);
-			Date day=new Date();    
-			wxlist.setDate(day);
-			wxlist.setDevsn_id(wUser);
-			session.save(wxlist);
-			ret =0;
-			System.out.println("unionId:"+unionId+"--->bind devsn"+phone); 
+		Session session = HibernateUtil.getSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			Query query = session.createQuery("update Weixinuser wx set wx.phone=? where unionId=?");
+			query.setParameter(0, phone);
+			query.setParameter(1, unionId);
+			query.executeUpdate();
+			tx.commit();// 提交事务
+			ret=0;
+		}catch (Exception e) {
+			System.out.println("WxSqlBindDevSn:"+e.toString());
 		}
-		tx.commit();// 提交事务
-		HibernateUtil.closeSession();// 关闭
+		HibernateUtil.closeSession();  
 		return ret;
 	}
 	
-	public static Set<WxDevsnlistUtil> ScanWxuserDevsnByUnionId(String unionId){
-		int ret =-1;
-		String str ="";
-		Weixinuser wxUser =null; 
 
-		Session session = HibernateUtil.getSession();// 创建session (代表一个会话，与数据库连接的会话)
-		Transaction tx = session.beginTransaction();// 开启事务
-		String sql = "from Weixinuser al where al.unionId=?";
-		Query query =session.createQuery(sql);//HQL创建查询语句
-		query.setParameter(0,unionId);
-		List<Object>list=query.list();
-		if(list!=null&&list.size()!=0){
-			Iterator iterator = list.iterator();
-			while(iterator.hasNext()){
-				wxUser = (Weixinuser) iterator.next();
-				System.out.println("ScanWxuserDevsnByUnionId:"+wxUser.toString()); 
-			}	 
-		}
-		Set<WxDevsnlistUtil> wxdevlist=wxUser.getDevsnS();
-		Iterator iterator = wxdevlist.iterator();
-		while(iterator.hasNext()){
-			WxDevsnlistUtil s= (WxDevsnlistUtil) iterator.next();
-			System.out.println("ScanWxuserDevsnByUnionId :"+s.getDevsn());
-		}
-		tx.commit();// 提交事务
-		HibernateUtil.closeSession();// 关闭
-		return wxdevlist;
-	}
 	
-	public static String CreateWxuserDevsnByUnionId_AckJson(String unionId){
+	public static String CreateWxuserDevsnByUnionId_AckJson(String unionId,String phone){
 		String str="";
-		Set<WxDevsnlistUtil> wxdevlist=ScanWxuserDevsnByUnionId(unionId);
+		Set<HuserDevsnlistUtil> wxdevlist=XiaomanyaoInterface.ScanuserDevsnByPhoneId(phone);
 		Iterator iterator = wxdevlist.iterator();
 		JSONObject obj = new JSONObject();
 		JSONArray jarr = new JSONArray();
 		while(iterator.hasNext()){
-			WxDevsnlistUtil s= (WxDevsnlistUtil) iterator.next();
+			HuserDevsnlistUtil s= (HuserDevsnlistUtil) iterator.next();
 			JSONObject js = new JSONObject();
 			js.put("sn", s.getDevsn());
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -228,6 +167,7 @@ public class WxSqlInterface {
 		}
 		obj.put("msgtype", "scandev");
 		obj.put("unionId", unionId);
+		obj.put("phone", phone);
 		obj.put("devsn", jarr);
 		str = obj.toString();
 		System.out.println("json : "+str);

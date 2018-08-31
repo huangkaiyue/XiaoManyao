@@ -35,19 +35,20 @@ public class WeixinAuth extends ActionSupport{
 			Ackopenid(openid);
 		}else if(msgtype.equals("bindsn")){			//微信用户绑定设备SN号
 			String unionId = js.getString("unionId").toString();
-			String devsn= js.getString("devsn").toString();
-			int ret =WxSqlInterface.WxSqlBindDevSn(unionId, devsn);
+			String phone= js.getString("phone").toString();
+			int ret =WxSqlInterface.WxSqlBindDevSn(unionId, phone);
 			if(ret==0){
-				AckBindDevSn(unionId,devsn,200,"bind ok");
+				AckBindDevSn(unionId,phone,200,"bind ok");
 			}else if(ret==-2){
-				AckBindDevSn(unionId,devsn,201,"已经绑定过设备");
+				AckBindDevSn(unionId,phone,201,"已经绑定过设备");
 			}
 			else{
-				AckBindDevSn(unionId,devsn,404,"not found unionId");
+				AckBindDevSn(unionId,phone,404,"没有发现手机用户");
 			}
 		}else if(msgtype.equals("scandev")){		//获取当前用户绑定的设备号
 			String unionId = js.getString("unionId").toString();
-			String jsondata=WxSqlInterface.CreateWxuserDevsnByUnionId_AckJson(unionId);
+			String phone = js.getString("phone").toString();
+			String jsondata=WxSqlInterface.CreateWxuserDevsnByUnionId_AckJson(unionId,phone);
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 		}else if(msgtype.equals("pushMsg")){		//推送消息到设备
 			String msgdir = js.getString("dir").toString();
@@ -101,12 +102,12 @@ public class WeixinAuth extends ActionSupport{
 		}
 		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 	}
-	private void AckBindDevSn(String unionId,String devsn,int result,String resdata) throws IOException{
+	private void AckBindDevSn(String unionId,String phone,int result,String resdata) throws IOException{
 		String jsondata ="";
 		JSONObject json = new JSONObject();
 		json.put("msgtype", "bindsn");
 		json.put("unionId", unionId);
-		json.put("devsn", devsn);
+		json.put("phone", phone);
 		json.put("result", result);
 		json.put("resdata", resdata);
 		jsondata = json.toString();

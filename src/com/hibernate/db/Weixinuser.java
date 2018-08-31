@@ -10,6 +10,8 @@ public class Weixinuser {
 	private String openid;
 	private String chmod;
 	private Date date;
+	private String phone;
+
 	private Set<WxDevsnlistUtil> devsnS = new HashSet<WxDevsnlistUtil>();
 	public int getuId() {
 		return uId;
@@ -40,6 +42,12 @@ public class Weixinuser {
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	public Set<WxDevsnlistUtil> getDevsnS() {
 		return devsnS;

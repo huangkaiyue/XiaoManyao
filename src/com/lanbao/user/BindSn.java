@@ -24,7 +24,7 @@ public class BindSn extends ActionSupport{
 			AckRequest(403,"无效的请求参数");
 		}else if(req.getMsgtype().equals("bindsn")){
 			if(req.getUsername()!=null&&req.getDevsn()!=null){
-				XiaomanyaoInterface.updatedevSn(req.getUsername(),req.getDevsn());
+				XiaomanyaoInterface.UserSqlBindDevSn(req.getUsername(),req.getDevsn());
 				AckRequest(200,"绑定设备成功");
 			}else{
 				AckRequest(403,"无效的请求参数");
