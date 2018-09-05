@@ -32,7 +32,8 @@ public class WeixinAuth extends ActionSupport{
 			String usercode = js.getString("usercode").toString();
 			String userencryData= js.getString("userencryData").toString();
 			String openid=GetWeixinOpenid(usercode);
-			Ackopenid(openid);
+			String phone =WxSqlInterface.GetPhoneByunionId(openid);
+			Ackopenid(openid,phone);
 		}else if(msgtype.equals("bindsn")){			//微信用户绑定设备SN号
 			String unionId = js.getString("unionId").toString();
 			String phone= js.getString("phone").toString();
@@ -77,8 +78,8 @@ public class WeixinAuth extends ActionSupport{
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 		}else if(msgtype.equals("delete")){		//解除微信号和设备绑定关系
 			String unionId = js.getString("unionId").toString();
-			String devsn = js.getString("devsn").toString();
-			WxSqlInterface.deleteDevSnByUnionId(unionId, devsn);
+			String phone = js.getString("phone").toString();
+			WxSqlInterface.deleteDevSnByUnionId(unionId, phone);
 			String jsondata = AckInterface.CreateAckJson("delete", "删除成功", "", 200);
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 		}
@@ -88,12 +89,13 @@ public class WeixinAuth extends ActionSupport{
 		String jsondata = AckInterface.CreateAckJson("getunionId", resdata, "", result);
 		HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),jsondata);
 	}
-	private void Ackopenid(String openid) throws IOException{
+	private void Ackopenid(String openid,String usrPhone) throws IOException{
 		String jsondata ="";
 		JSONObject json = new JSONObject();
 		json.put("msgtype", "getunionId");
 		json.put("unionId", openid);
 		json.put("openid", openid);
+		json.put("phone", usrPhone);
 		jsondata = json.toString();
 		if(WxSqlInterface.checkUnionId(openid)==false){
 			WxSqlInterface.InsertWxunionId(openid, openid);

@@ -125,6 +125,37 @@ public class WxSqlInterface {
 //		HibernateUtil.closeSession();// 关闭
 //		return ret;
 //	}
+	
+	//根据 unionId 查询手机号码
+	public static String GetPhoneByunionId(String unionId){
+		int ret =-1;
+		String phone="";
+		Session session = HibernateUtil.getSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "from Weixinuser wx where wx.unionId=?";
+			Query query = session.createQuery(sql);
+			query.setParameter(0, unionId);
+			query.executeUpdate();
+			List<Object>list=query.list();
+			 if(list!=null&&list.size()!=0){
+				 Iterator iterator = list.iterator();
+				 while(iterator.hasNext()){
+					 Weixinuser s = (Weixinuser) iterator.next();
+					 phone = s.getPhone();
+				 }
+		       }else{
+		    	   System.out.println("not find");     
+		       }
+			tx.commit();// 提交事务
+			ret=0;
+		}catch (Exception e) {
+			System.out.println("GetPhoneByunionId:"+e.toString());
+		}
+		HibernateUtil.closeSession();  
+		return phone;
+	}
+	
 	//更新微信用户绑定手机号码
 	public static int WxSqlBindDevSn(String unionId,String phone){
 		int ret =-1;
@@ -137,12 +168,12 @@ public class WxSqlInterface {
 			Query query = session.createQuery("update Weixinuser wx set wx.phone=? where unionId=?");
 			query.setParameter(0, phone);
 			query.setParameter(1, unionId);
-			query.executeUpdate();
-			tx.commit();// 提交事务
+			query.executeUpdate();	
 			ret=0;
 		}catch (Exception e) {
 			System.out.println("WxSqlBindDevSn:"+e.toString());
 		}
+		tx.commit();// 提交事务
 		HibernateUtil.closeSession();  
 		return ret;
 	}
@@ -174,7 +205,7 @@ public class WxSqlInterface {
 		return str;
 	}
 	
-	public static int deleteDevSnByUnionId(String unionId,String devsn){
+	public static int deleteDevSnByUnionId(String unionId,String phone){
 		int ret =-1;
 		String str ="";
 		Weixinuser wxUser =null; 
@@ -190,26 +221,27 @@ public class WxSqlInterface {
 			Iterator iterator = list.iterator();
 			while(iterator.hasNext()){
 				wxUser = (Weixinuser) iterator.next();
+				wxUser.setPhone("");
 				System.out.println("ScanWxuserDevsnByUnionId:"+wxUser.toString());
 				break;
 			}	 
 		}
-		Set<WxDevsnlistUtil> wlist =wxUser.getDevsnS();
-		
-		Iterator iterator =wlist.iterator();
-		while(iterator.hasNext()){
-			WxDevsnlistUtil ws= (WxDevsnlistUtil) iterator.next();
-			System.out.println(ws.toString());
-			if(ws.getDevsn().equals(devsn)){
-				delId = ws.getuId();
-			}
-		}
-		
-		sql = "delete from WxDevsnlistUtil wl where wl.uId=?";
-		query =session.createQuery(sql);//HQL创建查询语句
-		query.setParameter(0,delId);
-		query.executeUpdate();
-		System.out.println("delete from delId:"+delId);
+//		Set<WxDevsnlistUtil> wlist =wxUser.getDevsnS();
+//		
+//		Iterator iterator =wlist.iterator();
+//		while(iterator.hasNext()){
+//			WxDevsnlistUtil ws= (WxDevsnlistUtil) iterator.next();
+//			System.out.println(ws.toString());
+//			if(ws.getDevsn().equals(phone)){
+//				delId = ws.getuId();
+//			}
+//		}
+//		
+//		sql = "delete from WxDevsnlistUtil wl where wl.uId=?";
+//		query =session.createQuery(sql);//HQL创建查询语句
+//		query.setParameter(0,delId);
+//		query.executeUpdate();
+//		System.out.println("delete from delId:"+delId);
 		tx.commit();// 提交事务
 		HibernateUtil.closeSession();// 关闭	
 		return ret;
