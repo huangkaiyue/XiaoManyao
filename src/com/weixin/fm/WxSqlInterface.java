@@ -188,13 +188,16 @@ public class WxSqlInterface {
 		JSONArray jarr = new JSONArray();
 		while(iterator.hasNext()){
 			HuserDevsnlistUtil s= (HuserDevsnlistUtil) iterator.next();
-			JSONObject js = new JSONObject();
-			js.put("sn", s.getDevsn());
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			String dateString = formatter.format(s.getDate());
-			js.put("date", dateString);
-			jarr.add(js);
-			System.out.println("ScanWxuserDevsnByUnionId :"+s.getDevsn());
+			for(int i=0;i<3;i++){
+				JSONObject js = new JSONObject();
+				js.put("sn", s.getDevsn());
+				js.put("logo", "https://www.lanbaoai.cn/XiaoManyao/music?method=down&fileName=2018-8-6/周杰伦专辑.jpg");
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				String dateString = formatter.format(s.getDate());
+				js.put("date", dateString);
+				jarr.add(js);
+				System.out.println("ScanWxuserDevsnByUnionId :"+s.getDevsn());
+			}
 		}
 		obj.put("msgtype", "scandev");
 		obj.put("unionId", unionId);
