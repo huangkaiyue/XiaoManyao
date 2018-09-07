@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -157,5 +158,28 @@ public class XiaomanyaoMusicSql {
 		
 		return albumutil;
 	}
+	public static  List<AlbumUtil> ScanAlbumByPageHibernate(int pageNum){
+		Session session = HibernateUtil.getSession();// 创建session (代表一个会话，与数据库连接的会话)
+		Transaction tx = session.beginTransaction();// 开启事务
+
+		HibernatePage page = new HibernatePage();
+		page.setCurrentPage(pageNum);
+		page.setPerPageRows(3);
+		
+		Criteria criteria = session.createCriteria(AlbumUtil.class);
+		Integer currentPage = page.getCurrentPage();//得到当前页
+		Integer perPageRows = page.getPerPageRows();//得到每页的记录数：
+		criteria.setFirstResult((currentPage-1)*perPageRows);
+		criteria.setMaxResults(perPageRows);
+		
+		List<AlbumUtil> list = criteria.list();
+		for(AlbumUtil elist:list){
+			System.out.println("ScanAlbumByPageHibernate:"+elist.toString());
+		}
+		tx.commit();// 提交事务
+		HibernateUtil.closeSession();// 关闭
+		
+		return list;
+	} 
 
 }

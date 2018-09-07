@@ -16,8 +16,7 @@ import com.start.server.ConfigServer;
 
 public class XiaomanMusicAppInterface {
 	
-	public static String ScanAlbumList(){
-		
+	public static String ScanAlbumList(){		
 		String str = "";
 		String downurl = ConfigServer.getInstance().getDownUrl();
 		String httpsdownurl = ConfigServer.getInstance().getHttpsDownUrl();
@@ -88,4 +87,37 @@ public class XiaomanMusicAppInterface {
 		str = json.toString();
 		return str;
 	}
+	
+	public static String ScanAlbumByPage(int page){
+		String str = "";
+		String downurl = ConfigServer.getInstance().getDownUrl();
+		String httpsdownurl = ConfigServer.getInstance().getHttpsDownUrl();
+		List<AlbumUtil>list_e =XiaomanyaoMusicSql.ScanAlbumByPageHibernate(page);
+		if(list_e==null){
+			return str;
+		}
+		Iterator<AlbumUtil> iterator_e = list_e.iterator();
+		JSONObject json = new JSONObject();
+		JSONArray jarr = new JSONArray();
+		while(iterator_e.hasNext()){
+			AlbumUtil s = (AlbumUtil) iterator_e.next();
+			JSONObject obj = new JSONObject();
+			obj.put("AlbumName", s.getAlbumName());
+			obj.put("author", s.getAuthor());
+			obj.put("logo", httpsdownurl+s.getSavedir()+"/"+s.getLogo());
+			obj.put("logoHorizontal", httpsdownurl+s.getSavedir()+"/"+s.getLogoHorizontal());
+			obj.put("albmMessage", s.getAlbmMessage());
+			obj.put("pices", s.getPices());
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			String dateString = formatter.format(s.getDate());
+			obj.put("date", dateString);
+			obj.put("index", s.getmId());
+			jarr.add(obj);
+			System.out.println(s.toString());
+		}
+		json.put("Album", jarr);
+		str = json.toString();
+		return str;
+	}
+	
 }

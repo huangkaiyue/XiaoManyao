@@ -53,13 +53,15 @@ public class MusicList extends ActionSupport{
 			String pageStr = ServletActionContext.getRequest().getParameter("page");	
 			int page = Integer.parseInt(pageStr);
 			String json="";
-			if(page>=2){
-				json =XiaomanMusicAppInterface.loadMoreAlbum(page);
-				reslut=NONE;
-			}else{
-		        String path = ConfigServer.getInstance().getCacheDir()+"/albumlist.json"; 
-				json = CreateMusicListJson(path);	
-			}
+//			if(page>=2){
+//				json =XiaomanMusicAppInterface.loadMoreAlbum(page);
+//				reslut=NONE;
+//			}else{
+//		        String path = ConfigServer.getInstance().getCacheDir()+"/albumlist.json"; 
+//				json = CreateMusicListJson(path);	
+//			}
+			System.out.println("page:"+page);
+			json = XiaomanMusicAppInterface.ScanAlbumByPage(page);
 			HttpServletUtils.AckRequestResponse(ServletActionContext.getResponse(),json);
 			reslut=NONE;
 		}
