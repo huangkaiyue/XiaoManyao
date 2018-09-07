@@ -177,9 +177,7 @@ public class WxSqlInterface {
 		HibernateUtil.closeSession();  
 		return ret;
 	}
-	
-
-	
+		
 	public static String CreateWxuserDevsnByUnionId_AckJson(String unionId,String phone){
 		String str="";
 		Set<HuserDevsnlistUtil> wxdevlist=XiaomanyaoInterface.ScanuserDevsnByPhoneId(phone);

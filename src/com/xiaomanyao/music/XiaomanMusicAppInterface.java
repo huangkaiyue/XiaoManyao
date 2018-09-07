@@ -8,6 +8,8 @@ import java.util.Set;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.hibernate.Criteria;
+
 import com.hibernate.db.AlbumUtil;
 import com.hibernate.db.MusicListUtil;
 import com.start.server.ConfigServer;
@@ -15,6 +17,7 @@ import com.start.server.ConfigServer;
 public class XiaomanMusicAppInterface {
 	
 	public static String ScanAlbumList(){
+		
 		String str = "";
 		String downurl = ConfigServer.getInstance().getDownUrl();
 		String httpsdownurl = ConfigServer.getInstance().getHttpsDownUrl();
@@ -65,6 +68,7 @@ public class XiaomanMusicAppInterface {
 			obj.put("urls", httpsdownurl+s.getSaveDir()+"/"+s.getMusicName());
 			obj.put("author", s.getAuthor());
 			obj.put("md5", s.getMd5());
+			obj.put("id", s.getmId());
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			String dateString = formatter.format(s.getDate());
 			obj.put("date", dateString);
