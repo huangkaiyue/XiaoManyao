@@ -1,6 +1,9 @@
 package com.xiaomanyao.music;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -8,15 +11,13 @@ import java.util.Set;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.hibernate.Criteria;
-
 import com.hibernate.db.AlbumUtil;
 import com.hibernate.db.MusicListUtil;
 import com.start.server.ConfigServer;
 
 public class XiaomanMusicAppInterface {
 	
-	public static String ScanAlbumList(){		
+	public static String ScanAlbumList(){	//查找整个专辑列表	
 		String str = "";
 		String downurl = ConfigServer.getInstance().getDownUrl();
 		String httpsdownurl = ConfigServer.getInstance().getHttpsDownUrl();
@@ -48,7 +49,7 @@ public class XiaomanMusicAppInterface {
 		return str;
 	}
 	
-	public static String ScanAlbumMusicList(int index){
+	public static String ScanAlbumMusicList(int index){		//根据专辑索引ID查找关联歌曲
 		String str = "";
 		Set<MusicListUtil>list_e =XiaomanyaoMusicSql.ScanMusicListByAlbumId(index);
 		if(list_e==null){
@@ -56,7 +57,11 @@ public class XiaomanMusicAppInterface {
 		}
 		String downurl = ConfigServer.getInstance().getDownUrl();
 		String httpsdownurl = ConfigServer.getInstance().getHttpsDownUrl();
-		Iterator<MusicListUtil> iterator_e = list_e.iterator();
+		
+		List list = new ArrayList(list_e);
+//		System.out.println("start Collections.sort");
+		Collections.sort(list);
+		Iterator<MusicListUtil> iterator_e = list.iterator();
 		JSONObject json = new JSONObject();
 		JSONArray jarr = new JSONArray();
 		while(iterator_e.hasNext()){
@@ -74,21 +79,13 @@ public class XiaomanMusicAppInterface {
 			jarr.add(obj);
 			System.out.println(s.toString());
 		}
+		
 		json.put("musiclist", jarr);
 		str = json.toString();
 		return str;
 	}
 	
-	public static String loadMoreAlbum(int page){
-		String str = "";
-		JSONObject json = new JSONObject();
-		JSONArray jarr = new JSONArray();
-		json.put("Album", jarr);
-		str = json.toString();
-		return str;
-	}
-	
-	public static String ScanAlbumByPage(int page){
+	public static String ScanAlbumByPage(int page){		//根据页数查找专辑
 		String str = "";
 		String downurl = ConfigServer.getInstance().getDownUrl();
 		String httpsdownurl = ConfigServer.getInstance().getHttpsDownUrl();

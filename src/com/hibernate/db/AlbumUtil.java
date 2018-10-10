@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AlbumUtil {
+public class AlbumUtil implements Comparable<AlbumUtil>{
 	private int mId;
 	private String author;
 	private String albumName;
@@ -82,5 +82,19 @@ public class AlbumUtil {
 	public String toString() {
 		return "MusicListUtil [mId=" + mId + ", author=" + author+ ", albumName=" + albumName+ ",  logo=" + logo
 				+ ", pices="+pices+", savedir="+savedir+", albmMessage="+albmMessage+", date=" + date + "]";
+	}
+	@Override
+	public int compareTo(AlbumUtil o) {
+		// TODO Auto-generated method stub
+		System.out.println("test:"+o.getmId());
+	      if(this.mId>o.getmId()){
+	            return 1;
+	        }
+	        else if(this.mId<o.getmId()){
+	            return -1;
+	        }
+	        else{
+	            return 0;
+	        }
 	}
 }

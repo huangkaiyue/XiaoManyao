@@ -3,7 +3,7 @@ package com.hibernate.db;
 import java.util.Date;
 
 //һ�� ����
-public class MusicListUtil {
+public class MusicListUtil implements Comparable<MusicListUtil>{
 
 	private int mId;
 	private String musicName;
@@ -101,6 +101,21 @@ public class MusicListUtil {
 	public String toString() {
 		return "MusicListUtil [mId=" + mId + ", musicName=" + musicName+ ", author=" + author+ ",  logo=" + logo
 				+ ", pices="+pices+", saveDir="+saveDir+", date=" + date + "]";
+	}
+
+
+	@Override
+	public int compareTo(MusicListUtil o) {
+		// TODO Auto-generated method stub
+	      if(this.mId>o.getmId()){
+	            return 1;
+	        }
+	        else if(this.mId<o.getmId()){
+	            return -1;
+	        }
+	        else{
+	            return 0;
+	        }
 	}
 	
 }

@@ -92,7 +92,7 @@
 			<generator class="native"/>
 		</id>
 		
-		<property name="devsn" column="devsn" ></property>
+		<property name="devsn" column="devsn" ></property>	<!-- 已废弃，根据手机号码来查找 -->
 		<property name="date" column="date"></property>
 		<many-to-one name="devsn_id" column="devsn_id" class="Weixinuser"></many-to-one>
 	</class>
